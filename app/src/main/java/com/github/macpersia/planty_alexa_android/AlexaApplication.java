@@ -1,9 +1,9 @@
-package com.willblaschko.android.alexavoicelibrary;
+package com.github.macpersia.planty_alexa_android;
 
 import android.app.Application;
 import android.util.Log;
 
-import com.willblaschko.android.alexavoicelibrary.utility.SigningKey;
+import com.github.macpersia.planty_alexa_android.utility.SigningKey;
 
 /**
  * An application to handle all our initialization for the Alexa library before we

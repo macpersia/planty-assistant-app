@@ -1,4 +1,4 @@
-package com.willblaschko.android.alexavoicelibrary.utility;
+package com.github.macpersia.planty_alexa_android.utility;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;

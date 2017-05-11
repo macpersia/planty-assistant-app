@@ -1,4 +1,4 @@
-package com.willblaschko.android.alexavoicelibrary.actions;
+package com.github.macpersia.planty_alexa_android.actions;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.willblaschko.android.alexavoicelibrary.R;
+import com.github.macpersia.planty_alexa_android.R;
 
 import java.io.IOException;
 import java.io.InputStream;

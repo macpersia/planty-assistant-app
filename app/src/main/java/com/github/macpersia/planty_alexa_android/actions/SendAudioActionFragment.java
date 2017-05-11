@@ -1,4 +1,4 @@
-package com.willblaschko.android.alexavoicelibrary.actions;
+package com.github.macpersia.planty_alexa_android.actions;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -13,8 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.willblaschko.android.alexa.requestbody.DataRequestBody;
-import com.willblaschko.android.alexavoicelibrary.BuildConfig;
-import com.willblaschko.android.alexavoicelibrary.R;
+import com.github.macpersia.planty_alexa_android.BuildConfig;
+import com.github.macpersia.planty_alexa_android.R;
 import com.willblaschko.android.recorderview.RecorderView;
 
 import java.io.IOException;

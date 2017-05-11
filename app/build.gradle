@@ -3,41 +3,42 @@ apply plugin: 'com.android.application'
 
 if (file('signing.gradle').exists()) {
     apply from: 'signing.gradle'
-}else{
+} else {
     throw new TaskExecutionException(null, new Exception("Unable to find signing.gradle, please replace Android buildTypes > signing configs with your own configuration."));
 }
 
 android {
-    compileSdkVersion 24
+    //compileSdkVersion 24
+    lintOptions {
+        abortOnError false
+    }
+    compileSdkVersion 23
     buildToolsVersion '25.0.0'
-
     defaultConfig {
-        applicationId "com.willblaschko.android.alexavoicelibrary"
+        applicationId "com.github.macpersia.planty_alexa_android"
         minSdkVersion 21
 
-        targetSdkVersion 24
+        //targetSdkVersion 24
+        targetSdkVersion 23
         versionCode 5
         versionName "2.1.1"
         multiDexEnabled true;
     }
-
-
     buildTypes {
-        debug{
+        debug {
             versionNameSuffix " Debug"
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.releaseConfig
+            signingConfig signingConfigs.debug
         }
         release {
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.releaseConfig
+            signingConfig signingConfigs.release
         }
     }
-
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
@@ -48,16 +49,16 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:recyclerview-v7:24.2.1'
-    compile 'com.android.support:multidex:1.0.1'
-
+    //compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    //compile 'com.android.support:recyclerview-v7:24.2.1'
+    compile 'com.android.support:recyclerview-v7:23.2.1'
+    //    compile 'com.android.support:multidex:1.0.1'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
     compile project(path: ':libs:AlexaAndroid')
     compile project(path: ':libs:RecorderLevelView')
     compile project(path: ':libs:speechutils-master')
-
 }
 

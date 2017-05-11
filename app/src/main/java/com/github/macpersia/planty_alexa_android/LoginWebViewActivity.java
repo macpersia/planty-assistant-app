@@ -1,4 +1,4 @@
-package com.willblaschko.android.alexavoicelibrary;
+package com.github.macpersia.planty_alexa_android;
 
 import android.app.Activity;
 import android.content.Intent;

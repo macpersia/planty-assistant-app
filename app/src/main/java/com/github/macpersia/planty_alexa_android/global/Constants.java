@@ -1,4 +1,4 @@
-package com.willblaschko.android.alexavoicelibrary.global;
+package com.github.macpersia.planty_alexa_android.global;
 
 /**
  * @author will on 5/30/2016.

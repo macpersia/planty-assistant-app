@@ -1,4 +1,4 @@
-package com.willblaschko.android.alexavoicelibrary;
+package com.github.macpersia.planty_alexa_android;
 
 import android.app.Instrumentation;
 import android.content.Context;
@@ -34,12 +34,12 @@ import com.willblaschko.android.alexa.interfaces.speaker.AvsSetMuteItem;
 import com.willblaschko.android.alexa.interfaces.speaker.AvsSetVolumeItem;
 import com.willblaschko.android.alexa.interfaces.speechrecognizer.AvsExpectSpeechItem;
 import com.willblaschko.android.alexa.interfaces.speechsynthesizer.AvsSpeakItem;
-import com.willblaschko.android.alexavoicelibrary.actions.BaseListenerFragment;
+import com.github.macpersia.planty_alexa_android.actions.BaseListenerFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.willblaschko.android.alexavoicelibrary.global.Constants.PRODUCT_ID;
+import static com.github.macpersia.planty_alexa_android.global.Constants.PRODUCT_ID;
 
 /**
  * @author will on 5/30/2016.
@@ -195,7 +195,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseList
      * https://developer.amazon.com/public/solutions/alexa/alexa-voice-service/reference/audioplayer#PlaybackNearlyFinished Event
      */
     private void sendPlaybackStartedEvent(AvsItem item){
-        alexaManager.sendPlaybackStartedEvent(item, null);
+        alexaManager.sendPlaybackStartedEvent(item, 0, null);
         Log.i(TAG, "Sending SpeechStartedEvent");
     }
 

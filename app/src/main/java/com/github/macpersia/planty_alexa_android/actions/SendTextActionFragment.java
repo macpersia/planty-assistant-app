@@ -1,4 +1,4 @@
-package com.willblaschko.android.alexavoicelibrary.actions;
+package com.github.macpersia.planty_alexa_android.actions;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.willblaschko.android.alexavoicelibrary.R;
+import com.github.macpersia.planty_alexa_android.R;
 
 /**
  * @author will on 5/30/2016.

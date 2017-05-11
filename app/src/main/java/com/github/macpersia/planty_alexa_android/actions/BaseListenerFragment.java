@@ -1,4 +1,4 @@
-package com.willblaschko.android.alexavoicelibrary.actions;
+package com.github.macpersia.planty_alexa_android.actions;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,9 +11,9 @@ import android.view.MenuItem;
 import com.willblaschko.android.alexa.AlexaManager;
 import com.willblaschko.android.alexa.callbacks.AsyncCallback;
 import com.willblaschko.android.alexa.interfaces.AvsResponse;
-import com.willblaschko.android.alexavoicelibrary.R;
+import com.github.macpersia.planty_alexa_android.R;
 
-import static com.willblaschko.android.alexavoicelibrary.global.Constants.PRODUCT_ID;
+import static com.github.macpersia.planty_alexa_android.global.Constants.PRODUCT_ID;
 
 /**
  * @author will on 5/30/2016.

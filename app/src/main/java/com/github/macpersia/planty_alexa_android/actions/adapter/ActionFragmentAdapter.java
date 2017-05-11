@@ -1,4 +1,4 @@
-package com.willblaschko.android.alexavoicelibrary.actions.adapter;
+package com.github.macpersia.planty_alexa_android.actions.adapter;
 
 import android.support.annotation.DrawableRes;
 import android.support.v7.widget.RecyclerView;
@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.willblaschko.android.alexavoicelibrary.R;
+import com.github.macpersia.planty_alexa_android.R;
 
 import java.util.ArrayList;
 import java.util.List;

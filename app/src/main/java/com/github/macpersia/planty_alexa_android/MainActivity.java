@@ -1,4 +1,4 @@
-package com.willblaschko.android.alexavoicelibrary;
+package com.github.macpersia.planty_alexa_android;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,10 +8,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.TextView;
 
-import com.willblaschko.android.alexavoicelibrary.actions.ActionsFragment;
-import com.willblaschko.android.alexavoicelibrary.actions.BaseListenerFragment;
+import com.github.macpersia.planty_alexa_android.actions.ActionsFragment;
+import com.github.macpersia.planty_alexa_android.actions.BaseListenerFragment;
 
-import static com.willblaschko.android.alexavoicelibrary.R.id.frame;
+import static com.github.macpersia.planty_alexa_android.R.id.frame;
 
 /**
  * Our main launch activity where we can change settings, see about, etc.
