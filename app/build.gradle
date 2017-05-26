@@ -24,6 +24,11 @@ android {
         versionName "2.1.1"
         multiDexEnabled true;
     }
+
+    // lintOptions {
+    //     abortOnError false
+    // }
+
     buildTypes {
         debug {
             versionNameSuffix " Debug"
