@@ -5,5 +5,6 @@ package com.github.macpersia.planty_alexa_android.global;
  */
 
 public class Constants {
-    public static final String PRODUCT_ID = "interactive_conversation";
+    //public static final String PRODUCT_ID = "interactive_conversation";
+    public static final String PRODUCT_ID = "com_github_macpersia_planty_alexa_android";
 }
