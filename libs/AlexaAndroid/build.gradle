@@ -1,4 +1,6 @@
 buildscript {
+    ext.kotlin_version = '1.2.0'
+
     repositories {
         mavenCentral()
         jcenter()
@@ -10,6 +12,7 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.jfrog.bintray'
 
 def versionMajor = 2
@@ -56,6 +59,7 @@ dependencies {
     //compile 'com.google.android.gms:play-services-base:9.6.1'
     compile 'com.google.android.gms:play-services-base:9.4.0'
     testCompile 'junit:junit:4.12'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 
 android {
@@ -89,3 +93,6 @@ tasks.withType(Javadoc) {
 
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+repositories {
+    mavenCentral()
+}
