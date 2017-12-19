@@ -174,7 +174,7 @@ class AuthorizationManager
      *
      * @param callback our state change callback
      */
-    fun authorizeUser(callback: AuthorizationCallback) {
+    fun authorizeUser(callback: AuthorizationCallback?) {
         mCallback = callback
 
         val PRODUCT_DSN = Settings.Secure.getString(mContext.contentResolver,

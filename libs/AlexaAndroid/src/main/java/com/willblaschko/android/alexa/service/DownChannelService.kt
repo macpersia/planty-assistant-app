@@ -84,7 +84,7 @@ class DownChannelService : Service() {
                     @Throws(IOException::class)
                     override fun onResponse(call: Call, response: Response) {
 
-                        alexaManager!!.sendEvent(Event.synchronizeStateEvent, object : ImplAsyncCallback<AvsResponse, Exception>() {
+                        alexaManager!!.sendEvent(Event.synchronizeStateEvent, object : ImplAsyncCallback<AvsResponse, Exception?>() {
                             override fun success(result: AvsResponse) {
                                 handler!!.handleItems(result)
                                 sendHeartbeat()

@@ -57,7 +57,7 @@ abstract class BaseActivity : AppCompatActivity(), BaseListenerFragment.AvsListe
         private var almostDoneFired = false
         private var playbackStartedFired = false
 
-        override fun playerPrepared(pendingItem: AvsItem) {
+        override fun playerPrepared(pendingItem: AvsItem?) {
 
         }
 
@@ -100,19 +100,17 @@ abstract class BaseActivity : AppCompatActivity(), BaseListenerFragment.AvsListe
             sendPlaybackFinishedEvent(completedItem)
         }
 
-        override fun playerError(item: AvsItem, what: Int, extra: Int): Boolean {
+        override fun playerError(item: AvsItem?, what: Int, extra: Int): Boolean {
             return false
         }
 
-        override fun dataError(item: AvsItem, e: Exception) {
+        override fun dataError(item: AvsItem?, e: Exception) {
             e.printStackTrace()
         }
-
-
     }
 
     //async callback for commands sent to Alexa Voice
-    private val requestCallback = object : AsyncCallback<AvsResponse, Exception> {
+    override val requestCallback = object : AsyncCallback<AvsResponse, Exception?> {
         override fun start() {
             startTime = System.currentTimeMillis()
             Log.i(TAG, "Event Start")
@@ -124,8 +122,8 @@ abstract class BaseActivity : AppCompatActivity(), BaseListenerFragment.AvsListe
             handleResponse(result)
         }
 
-        override fun failure(error: Exception) {
-            error.printStackTrace()
+        override fun failure(error: Exception?) {
+            error!!.printStackTrace()
             Log.i(TAG, "Event Error")
             setState(STATE_FINISHED)
         }
@@ -161,12 +159,6 @@ abstract class BaseActivity : AppCompatActivity(), BaseListenerFragment.AvsListe
             audioPlayer!!.release()
         }
     }
-
-
-    override fun getRequestCallback(): AsyncCallback<AvsResponse, Exception> {
-        return requestCallback
-    }
-
 
     private fun initAlexaAndroid() {
         //get our AlexaManager instance for convenience
@@ -229,7 +221,7 @@ abstract class BaseActivity : AppCompatActivity(), BaseListenerFragment.AvsListe
                     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                 }
             }
-            alexaManager!!.sendPlaybackFinishedEvent(item, noOpCallback )
+            alexaManager!!.sendPlaybackFinishedEvent(item, null )
             Log.i(TAG, "Sending PlaybackFinishedEvent")
         }
     }

@@ -166,7 +166,7 @@ private constructor(context: Context) {
 
         private val TAG = "VoiceHelper"
 
-        private lateinit var mInstance: VoiceHelper
+        private var mInstance: VoiceHelper? = null
 
         /**
          * Get an instance of the VoiceHelper utility class, if it's currently null,
@@ -175,10 +175,10 @@ private constructor(context: Context) {
          * @return
          */
         fun getInstance(context: Context): VoiceHelper {
-            if (!::mInstance.isInitialized) {
+            if (mInstance == null) {
                 mInstance = VoiceHelper(context)
             }
-            return mInstance
+            return mInstance!!
         }
     }
 }

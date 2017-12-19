@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
 import android.util.Log
+import com.willblaschko.android.alexa.AlexaManager.Companion.mInstance
 import com.willblaschko.android.alexa.AuthorizationManager.Companion.createCodeVerifier
 
 import com.willblaschko.android.alexa.callbacks.AsyncCallback
@@ -48,7 +49,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
     private lateinit var mVoiceHelper: VoiceHelper
     var urlEndpoint: String? = null
         set(url) {
-            urlEndpoint = url
+            field = url
             Util.getPreferences(mContext)
                     .edit()
                     .putString(KEY_URL_ENDPOINT, url)
@@ -157,18 +158,19 @@ class AlexaManager private constructor(context: Context, productId: String?) {
      * Send a log in request to the Amazon Authentication Manager
      * @param callback state callback
      */
-    fun logIn(callback: AuthorizationCallback) {
+    fun logIn(callback: AuthorizationCallback?) {
         //check if we're already logged in
         authorizationManager.checkLoggedIn(mContext, object : AsyncCallback<Boolean, Throwable> {
             override fun start() {}
             override fun success(result: Boolean) {
                 //if we are, return a success
-                if (result) {
-                    callback.onSuccess()
-                } else {
-                    //otherwise start the authorization process
-                    authorizationManager.authorizeUser(callback)
-                }
+                if (callback != null)
+                    if (result) {
+                        callback!!.onSuccess()
+                    } else {
+                        //otherwise start the authorization process
+                        authorizationManager.authorizeUser(callback)
+                    }
             }
             override fun failure(error: Throwable) {
                 callback?.onError(Exception(error))
@@ -187,7 +189,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
      * See: [.sendEvent]
      * @param callback state callback
      */
-    fun sendSynchronizeStateEvent(callback: AsyncCallback<AvsResponse, Exception>?) {
+    fun sendSynchronizeStateEvent(callback: AsyncCallback<AvsResponse, Exception?>?) {
         sendEvent(Event.synchronizeStateEvent, callback)
     }
 
@@ -201,7 +203,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
      * @param text the arbitrary text that we want to send to the AVS server
      * @param callback the state change callback
      */
-    fun sendTextRequest(text: String, callback: AsyncCallback<AvsResponse, Exception>?) {
+    fun sendTextRequest(text: String, callback: AsyncCallback<AvsResponse, Exception?>?) {
         //check if the user is already logged in
         authorizationManager.checkLoggedIn(mContext, object : ImplCheckLoggedInCallback() {
             override fun success(result: Boolean) {
@@ -211,7 +213,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
                     //set our URL
                     val url = eventsUrl
                     //do this off the main thread
-                    object : AsyncTask<Void, Void, AvsResponse>() {
+                    object : AsyncTask<Void, Void, AvsResponse?>() {
                         override fun doInBackground(vararg params: Void): AvsResponse? {
                             //get our access token
                             TokenManager.getAccessToken(authorizationManager.amazonAuthorizationManager!!, mContext, object : TokenManager.TokenCallback {
@@ -232,8 +234,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
                             return null
                         }
 
-
-                        override fun onPostExecute(avsResponse: AvsResponse) {
+                        override fun onPostExecute(avsResponse: AvsResponse?) {
                             super.onPostExecute(avsResponse)
                         }
                     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
@@ -260,7 +261,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
      * @param data the audio data that we want to send to the AVS server
      * @param callback the state change callback
      */
-    fun sendAudioRequest(data: ByteArray, callback: AsyncCallback<AvsResponse, Exception>?) {
+    fun sendAudioRequest(data: ByteArray, callback: AsyncCallback<AvsResponse, Exception?>?) {
         sendAudioRequest(object : DataRequestBody() {
             @Throws(IOException::class)
             override fun writeTo(sink: BufferedSink) {
@@ -275,7 +276,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
      * @param requestBody a request body that incorporates either a static byte[] write to the BufferedSink or a streamed, managed byte[] data source
      * @param callback the state change callback
      */
-    fun sendAudioRequest(requestBody: DataRequestBody, callback: AsyncCallback<AvsResponse, Exception>?) {
+    fun sendAudioRequest(requestBody: DataRequestBody, callback: AsyncCallback<AvsResponse, Exception?>?) {
         //check if the user is already logged in
         authorizationManager.checkLoggedIn(mContext, object : ImplCheckLoggedInCallback() {
 
@@ -289,7 +290,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
                     TokenManager.getAccessToken(authorizationManager.amazonAuthorizationManager!!, mContext, object : TokenManager.TokenCallback {
                         override fun onSuccess(token: String) {
                             //do this off the main thread
-                            object : AsyncTask<Void, Void, AvsResponse>() {
+                            object : AsyncTask<Void, Void, AvsResponse?>() {
                                 override fun doInBackground(vararg params: Void): AvsResponse? {
                                     try {
                                         speechSendAudio.sendAudio(url, token, requestBody, AsyncEventHandler(this@AlexaManager, callback))
@@ -302,7 +303,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
                                     return null
                                 }
 
-                                override fun onPostExecute(avsResponse: AvsResponse) {
+                                override fun onPostExecute(avsResponse: AvsResponse?) {
                                     super.onPostExecute(avsResponse)
                                 }
                             }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
@@ -346,7 +347,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
      * @param isMute report whether the device is currently muted
      * @param callback state callback
      */
-    fun sendVolumeChangedEvent(volume: Long, isMute: Boolean, callback: AsyncCallback<AvsResponse, Exception>?) {
+    fun sendVolumeChangedEvent(volume: Long, isMute: Boolean, callback: AsyncCallback<AvsResponse, Exception?>?) {
         sendEvent(Event.getVolumeChangedEvent(volume, isMute), callback)
     }
 
@@ -357,7 +358,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
      * @param isMute mute state as reported by the [com.willblaschko.android.alexa.interfaces.speaker.AvsSetMuteItem] Directive
      * @param callback
      */
-    fun sendMutedEvent(isMute: Boolean, callback: AsyncCallback<AvsResponse, Exception>?) {
+    fun sendMutedEvent(isMute: Boolean, callback: AsyncCallback<AvsResponse, Exception?>?) {
         sendEvent(Event.getMuteEvent(isMute), callback)
     }
 
@@ -367,7 +368,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
      *
      * @param callback
      */
-    fun sendExpectSpeechTimeoutEvent(callback: AsyncCallback<AvsResponse, Exception>) {
+    fun sendExpectSpeechTimeoutEvent(callback: AsyncCallback<AvsResponse, Exception?>) {
         sendEvent(Event.expectSpeechTimedOutEvent, callback)
     }
 
@@ -379,7 +380,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
      * @param item our speak item
      * @param callback
      */
-    fun sendPlaybackStartedEvent(item: AvsItem?, milliseconds: Long, callback: AsyncCallback<AvsResponse, Exception>) {
+    fun sendPlaybackStartedEvent(item: AvsItem?, milliseconds: Long, callback: AsyncCallback<AvsResponse, Exception?>?) {
         if (item == null) {
             return
         }
@@ -400,7 +401,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
      * @param item our speak item
      * @param callback
      */
-    fun sendPlaybackFinishedEvent(item: AvsItem?, callback: AsyncCallback<AvsResponse, Exception>) {
+    fun sendPlaybackFinishedEvent(item: AvsItem?, callback: AsyncCallback<AvsResponse, Exception?>?) {
         if (item == null) {
             return
         }
@@ -420,7 +421,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
      * @param item our speak/playback item
      * @param callback
      */
-    fun sendPlaybackNearlyFinishedEvent(item: AvsPlayAudioItem?, milliseconds: Long, callback: AsyncCallback<AvsResponse, Exception>) {
+    fun sendPlaybackNearlyFinishedEvent(item: AvsPlayAudioItem?, milliseconds: Long, callback: AsyncCallback<AvsResponse, Exception?>?) {
         if (item == null) {
             return
         }
@@ -434,7 +435,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
      * @param event the string JSON event
      * @param callback
      */
-    fun sendEvent(event: String, callback: AsyncCallback<AvsResponse, Exception>?) {
+    fun sendEvent(event: String, callback: AsyncCallback<AvsResponse, Exception?>?) {
         //check if the user is already logged in
         authorizationManager.checkLoggedIn(mContext, object : ImplCheckLoggedInCallback() {
 
@@ -448,14 +449,14 @@ class AlexaManager private constructor(context: Context, productId: String?) {
                     TokenManager.getAccessToken(authorizationManager.amazonAuthorizationManager!!, mContext, object : TokenManager.TokenCallback {
                         override fun onSuccess(token: String) {
                             //do this off the main thread
-                            object : AsyncTask<Void, Void, AvsResponse>() {
+                            object : AsyncTask<Void, Void, AvsResponse?>() {
                                 override fun doInBackground(vararg params: Void): AvsResponse? {
                                     Log.i(TAG, event)
                                     GenericSendEvent(url, token, event, AsyncEventHandler(this@AlexaManager, callback))
                                     return null
                                 }
 
-                                override fun onPostExecute(avsResponse: AvsResponse) {
+                                override fun onPostExecute(avsResponse: AvsResponse?) {
                                     super.onPostExecute(avsResponse)
                                 }
                             }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
@@ -484,7 +485,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
     }
 
 
-    private class AsyncEventHandler(internal var manager: AlexaManager, internal var callback: AsyncCallback<AvsResponse, Exception>?) : AsyncCallback<Call, Exception> {
+    private class AsyncEventHandler(internal var manager: AlexaManager, internal var callback: AsyncCallback<AvsResponse, Exception?>?) : AsyncCallback<Call, Exception> {
 
         override fun start() {
             if (callback != null) {
@@ -545,7 +546,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
         }
     }
 
-    private abstract class ImplAuthorizationCallback<E>(internal var callback: AsyncCallback<E, Exception>?) : AuthorizationCallback {
+    private abstract class ImplAuthorizationCallback<E>(internal var callback: AsyncCallback<E, Exception?>?) : AuthorizationCallback {
 
         override fun onCancel() {
 
@@ -577,11 +578,10 @@ class AlexaManager private constructor(context: Context, productId: String?) {
 
     companion object {
 
-
         private val TAG = "AlexaManager"
         private val KEY_URL_ENDPOINT = "url_endpoint"
 
-        private lateinit var mInstance: AlexaManager
+        private var mInstance: AlexaManager? = null
         private lateinit var mAndroidSystemHandler: AndroidSystemHandler
 
         /**
@@ -591,7 +591,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
          * @return AlexaManager instance
          */
         fun getInstance(context: Context): AlexaManager {
-            return getInstance(context, null)
+            return getInstance(context, null);
         }
 
         /**
@@ -604,12 +604,11 @@ class AlexaManager private constructor(context: Context, productId: String?) {
          * @param productId AVS product id
          * @return AlexaManager instance
          */
-        @Deprecated("")
         fun getInstance(context: Context, productId: String?): AlexaManager {
-            if (!::mInstance.isInitialized) {
+            if (mInstance == null) {
                 mInstance = AlexaManager(context, productId)
             }
-            return mInstance
+            return mInstance!!
         }
     }
 }

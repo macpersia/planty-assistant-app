@@ -120,7 +120,7 @@ class SendAudioActionFragment : BaseListenerFragment() {
 
     override fun startListening() {
         if (recorder == null) {
-            recorder = RawAudioRecorder(AUDIO_RATE)
+            recorder = RawAudioRecorder(sampleRate = AUDIO_RATE)
         }
         recorder!!.start()
         alexaManager.sendAudioRequest(requestBody, requestCallback)

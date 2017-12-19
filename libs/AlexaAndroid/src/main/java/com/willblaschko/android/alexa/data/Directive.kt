@@ -53,7 +53,7 @@ class Directive {
             internal set
         lateinit var scheduledTime: String
             internal set
-        lateinit var playBehavior: String
+        var playBehavior: String? = null
             internal set
         lateinit var audioItem: AudioItem
             internal set

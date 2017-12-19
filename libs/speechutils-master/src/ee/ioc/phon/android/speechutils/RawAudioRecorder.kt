@@ -56,7 +56,10 @@ class RawAudioRecorder
  * @param audioSource Identifier of the audio source (e.g. microphone)
  * @param sampleRate  Sample rate (e.g. 16000)
  */
-@JvmOverloads constructor(audioSource: Int = AudioRecorder.DEFAULT_AUDIO_SOURCE, sampleRate: Int = AudioRecorder.DEFAULT_SAMPLE_RATE) : AbstractAudioRecorder(audioSource, sampleRate) {
+@JvmOverloads constructor(
+        audioSource: Int = AudioRecorder.DEFAULT_AUDIO_SOURCE,
+        sampleRate: Int = AudioRecorder.DEFAULT_SAMPLE_RATE)
+    : AbstractAudioRecorder(audioSource, sampleRate) {
 
     override val wsArgs: String
         get() = "?content-type=audio/x-raw,+layout=(string)interleaved,+rate=(int)$sampleRate,+format=(string)S16LE,+channels=(int)1"

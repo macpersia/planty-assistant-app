@@ -346,7 +346,7 @@ private constructor(context: Context) {
 
         val TAG = "AlexaAudioPlayer"
 
-        private lateinit var mInstance: AlexaAudioPlayer
+        private var mInstance: AlexaAudioPlayer? = null
 
         /**
          * Get a reference to the AlexaAudioPlayer instance, if it's null, we will create a new one
@@ -359,7 +359,7 @@ private constructor(context: Context) {
                 mInstance = AlexaAudioPlayer(context)
                 trimCache(context)
             }
-            return mInstance
+            return mInstance!!
         }
 
         private fun trimCache(context: Context) {

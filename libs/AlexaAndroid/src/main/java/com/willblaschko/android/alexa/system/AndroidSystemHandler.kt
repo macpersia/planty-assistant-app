@@ -127,7 +127,7 @@ class AndroidSystemHandler private constructor(context: Context) {
             //todo make this better
             Handler(Looper.getMainLooper()).postDelayed({
                 AlexaManager.getInstance(context)
-                        .sendEvent(Event.getAlertStartedEvent(item.token), object : ImplAsyncCallback<AvsResponse, Exception>() {
+                        .sendEvent(Event.getAlertStartedEvent(item.token), object : ImplAsyncCallback<AvsResponse, Exception?>() {
                             override fun complete() {
                                 AlexaManager.getInstance(context)
                                         .sendEvent(Event.getAlertStoppedEvent(item.token), null)
@@ -198,12 +198,12 @@ class AndroidSystemHandler private constructor(context: Context) {
 
     companion object {
         private val TAG = "AndroidSystemHandler"
-        lateinit private var instance: AndroidSystemHandler
+        private var instance: AndroidSystemHandler? = null
         fun getInstance(context: Context): AndroidSystemHandler {
-            if (!::instance.isInitialized) {
+            if (instance == null) {
                 instance = AndroidSystemHandler(context)
             }
-            return instance
+            return instance!!
         }
 
 

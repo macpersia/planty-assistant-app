@@ -351,7 +351,7 @@ abstract class AbstractAudioRecorder protected constructor(audioSource: Int, pro
             //if (ByteOrder.nativeOrder().equals(ByteOrder.BIG_ENDIAN)) {
             //    return (short) ((argB1 << 8) | argB2);
             //}
-            return ((argB1 as Int) or ((argB2 as Int) shl 8)).toShort()
+            return (argB1.toInt() or (argB2.toInt() shl 8)).toShort()
         }
     }
 }

@@ -22,7 +22,7 @@ abstract class BaseListenerFragment : Fragment() {
 
     protected lateinit var alexaManager: AlexaManager
 
-    protected val requestCallback: AsyncCallback<AvsResponse, Exception>?
+    protected val requestCallback: AsyncCallback<AvsResponse, Exception?>?
         get() = if (activity != null && activity is AvsListenerInterface) {
             (activity as AvsListenerInterface).requestCallback
         } else null
@@ -66,7 +66,7 @@ abstract class BaseListenerFragment : Fragment() {
     abstract fun startListening()
 
     interface AvsListenerInterface {
-        val requestCallback: AsyncCallback<AvsResponse, Exception>
+        val requestCallback: AsyncCallback<AvsResponse, Exception?>
     }
 
     protected fun loadFragment(fragment: Fragment) {
