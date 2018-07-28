@@ -4,9 +4,10 @@ buildscript {
     repositories {
         mavenCentral()
         jcenter()
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.1'
+        classpath 'com.android.tools.build:gradle:3.1.1'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.1'
     }
 }
@@ -48,25 +49,26 @@ ext {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.intellij:annotations:+@jar'
-    compile 'com.google.code.gson:gson:2.7'
-    compile 'commons-io:commons-io:2.5'
-    compile 'com.squareup.okhttp3:okhttp:3.6.0'
-    compile 'org.greenrobot:eventbus:3.0.0'
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    api 'com.intellij:annotations:+@jar'
+    api 'com.google.code.gson:gson:2.7'
+    api 'commons-io:commons-io:2.5'
+    api 'com.squareup.okhttp3:okhttp:3.6.0'
+    api 'org.greenrobot:eventbus:3.0.0'
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-    compile 'org.apache.commons:commons-lang3:3.0'
+    api 'org.apache.commons:commons-lang3:3.0'
     //compile 'com.google.android.gms:play-services-base:9.6.1'
-    compile 'com.google.android.gms:play-services-base:9.4.0'
-    testCompile 'junit:junit:4.12'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    api 'com.google.android.gms:play-services-base:9.4.0'
+    testImplementation 'junit:junit:4.12'
+    api "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 
 android {
     signingConfigs {
     }
     compileSdkVersion 23
-    buildToolsVersion '25.0.0'
+//    buildToolsVersion '25.0.0'
+    buildToolsVersion '27.0.3'
     defaultConfig {
         minSdkVersion 21
         //targetSdkVersion 24

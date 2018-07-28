@@ -14,7 +14,7 @@ android {
         abortOnError false
     }
     compileSdkVersion 23
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "com.github.macpersia.planty_alexa_android"
         minSdkVersion 21
@@ -55,18 +55,18 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    //compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:appcompat-v7:23.2.1'
-    //compile 'com.android.support:recyclerview-v7:24.2.1'
-    compile 'com.android.support:recyclerview-v7:23.2.1'
-    //    compile 'com.android.support:multidex:1.0.1'
-    compile 'com.squareup.okhttp3:okhttp:3.2.0'
-    compile project(path: ':libs:AlexaAndroid')
-    compile project(path: ':libs:RecorderLevelView')
-    compile project(path: ':libs:speechutils-master')
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    //api 'com.android.support:appcompat-v7:24.2.1'
+    api 'com.android.support:appcompat-v7:23.2.1'
+    //api 'com.android.support:recyclerview-v7:24.2.1'
+    api 'com.android.support:recyclerview-v7:23.2.1'
+    //api 'com.android.support:multidex:1.0.1'
+    api 'com.squareup.okhttp3:okhttp:3.2.0'
+    api project(path: ':libs:AlexaAndroid')
+    api project(path: ':libs:RecorderLevelView')
+    api project(path: ':libs:speechutils-master')
+    api "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 repositories {
     mavenCentral()
