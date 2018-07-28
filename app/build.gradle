@@ -24,6 +24,9 @@ android {
         versionCode 5
         versionName "2.1.1"
         multiDexEnabled true;
+
+        // Added by Hadi, to support '@color/white' (https://stackoverflow.com/questions/46978566/references-to-other-resources-are-not-supported-by-build-time-png-generation)
+        vectorDrawables.useSupportLibrary = true
     }
 
     // lintOptions {
@@ -66,9 +69,10 @@ dependencies {
     api project(path: ':libs:AlexaAndroid')
     api project(path: ':libs:RecorderLevelView')
     api project(path: ':libs:speechutils-master')
-    api "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {
     mavenCentral()
+    google()
 }
 
