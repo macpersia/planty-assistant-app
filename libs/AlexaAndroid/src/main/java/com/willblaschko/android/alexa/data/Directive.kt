@@ -23,11 +23,11 @@ class Directive {
 
     //PLAY BEHAVIORS
 
-    val isPlayBehaviorReplaceAll: Boolean
+    val playBehaviorReplaceAll: Boolean
         get() = TextUtils.equals(payload.playBehavior, PLAY_BEHAVIOR_REPLACE_ALL)
-    val isPlayBehaviorEnqueue: Boolean
+    val playBehaviorEnqueue: Boolean
         get() = TextUtils.equals(payload.playBehavior, PLAY_BEHAVIOR_ENQUEUE)
-    val isPlayBehaviorReplaceEnqueued: Boolean
+    val playBehaviorReplaceEnqueued: Boolean
         get() = TextUtils.equals(payload.playBehavior, PLAY_BEHAVIOR_REPLACE_ENQUEUED)
 
     class Header {
@@ -48,14 +48,13 @@ class Directive {
             internal set
         lateinit var format: String
             internal set
-        internal lateinit var token: String
         lateinit var type: String
             internal set
         lateinit var scheduledTime: String
             internal set
         var playBehavior: String? = null
             internal set
-        lateinit var audioItem: AudioItem
+        var audioItem: AudioItem? = null
             internal set
         var volume: Long = 0
             internal set
@@ -67,16 +66,9 @@ class Directive {
             internal set
         lateinit var code: String
             internal set
-
-        fun getToken(): String? {
-            if (token == null) {
-                //sometimes we need to return the stream tokens, not the top level tokens
-                if (audioItem != null && audioItem!!.stream != null) {
-                    return audioItem!!.stream!!.token
-                }
-            }
-            return token
-        }
+        var token: String = ""
+	    internal set
+            get() = if (field.isNotBlank()) field else audioItem?.stream?.token?:""
     }
 
     class AudioItem {
@@ -88,7 +80,6 @@ class Directive {
 
     class Stream {
         //todo progressReport
-
 
         var url: String? = null
             internal set

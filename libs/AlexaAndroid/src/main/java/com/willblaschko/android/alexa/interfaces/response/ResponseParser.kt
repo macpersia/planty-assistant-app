@@ -142,10 +142,10 @@ object ResponseParser {
 
         for (directive in directives) {
 
-            if (directive.isPlayBehaviorReplaceAll) {
+            if (directive.playBehaviorReplaceAll) {
                 response.add(0, AvsReplaceAllItem(directive.payload.token))
             }
-            if (directive.isPlayBehaviorReplaceEnqueued) {
+            if (directive.playBehaviorReplaceEnqueued) {
                 response.add(AvsReplaceEnqueuedItem(directive.payload.token))
             }
 
@@ -175,11 +175,11 @@ object ResponseParser {
                 return AvsSpeakItem(directive.payload.token, cid, audio!![cid])
             }
             Directive.TYPE_PLAY -> {
-                val url = directive.payload.audioItem.stream!!.url
+                val url = directive.payload.audioItem?.stream?.url
                 return if (url!!.contains("cid:")) {
                     AvsPlayAudioItem(directive.payload.token, url, audio!![url])
                 } else {
-                    AvsPlayRemoteItem(directive.payload.token, url, directive.payload.audioItem.stream!!.offsetInMilliseconds)
+                    AvsPlayRemoteItem(directive.payload.token, url, directive.payload.audioItem?.stream!!.offsetInMilliseconds)
                 }
             }
             Directive.TYPE_STOP_CAPTURE -> return AvsStopCaptureItem(directive.payload.token)
