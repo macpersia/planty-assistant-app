@@ -1,25 +1,16 @@
 package com.willblaschko.android.alexa
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-
 import com.amazon.identity.auth.device.AuthError
 import com.amazon.identity.auth.device.authorization.api.AmazonAuthorizationManager
 import com.google.gson.Gson
 import com.willblaschko.android.alexa.connection.ClientUtil
 import com.willblaschko.android.alexa.utility.Util
-
+import okhttp3.*
 import java.io.IOException
-
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.FormBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
 
 /**
  * A utility class designed to request, receive, store, and renew Amazon authentication tokens using a Volley interface and the Amazon auth API

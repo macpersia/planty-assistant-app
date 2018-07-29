@@ -6,7 +6,6 @@ import android.os.AsyncTask
 import android.util.Log
 import com.willblaschko.android.alexa.AlexaManager.Companion.mInstance
 import com.willblaschko.android.alexa.AuthorizationManager.Companion.createCodeVerifier
-
 import com.willblaschko.android.alexa.callbacks.AsyncCallback
 import com.willblaschko.android.alexa.callbacks.AuthorizationCallback
 import com.willblaschko.android.alexa.data.Event
@@ -299,18 +298,15 @@ class AlexaManager private constructor(context: Context, productId: String?) {
                                         //bubble up the error
                                         callback?.failure(e)
                                     }
-
                                     return null
                                 }
-
                                 override fun onPostExecute(avsResponse: AvsResponse?) {
                                     super.onPostExecute(avsResponse)
                                 }
                             }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
                         }
-
                         override fun onFailure(e: Throwable) {
-
+                            Log.e(TAG, e.message, e)
                         }
                     })
                 } else {
@@ -591,7 +587,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
          * @return AlexaManager instance
          */
         fun getInstance(context: Context): AlexaManager {
-            return getInstance(context, null);
+            return getInstance(context, context.applicationInfo.packageName)
         }
 
         /**

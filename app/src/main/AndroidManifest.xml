@@ -27,7 +27,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".LoginWebViewActivity">
+        <activity android:name=".LoginWebViewActivity"
+                  android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -68,7 +69,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- android:host must use the full package name found in Manifest General Attributes -->
-                <!--<data android:host="${applicationId}" android:scheme="amzn" />-->
                 <data android:host="${applicationId}" android:scheme="amzn" />
             </intent-filter>
         </activity>
