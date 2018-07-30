@@ -17,11 +17,13 @@ class AlexaApplication: Application() {
 
         //if we run in DEBUG mode, we can get our signing key in the LogCat
         if (BuildConfig.DEBUG) {
-            Log.i("AlexaApplication", SigningKey.getCertificateMD5Fingerprint(this))
+            Log.i(TAG, SigningKey.getCertificateMD5Fingerprint(this))
         }
     }
 
     companion object {
+
+        private val TAG = AlexaApplication.javaClass.simpleName
 
         //Our Amazon application product ID, this is passed to the server when we authenticate
         private val PRODUCT_ID = "interactive_conversation"

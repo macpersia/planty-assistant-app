@@ -1,26 +1,22 @@
 package com.github.macpersia.planty_alexa_android.actions
 
+import android.app.Fragment
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.amazon.identity.auth.device.api.workflow.RequestContext
-import com.amazon.identity.auth.device.utils.LWAConstants
-import com.github.macpersia.planty_alexa_android.LoginWebViewActivity
-
-import com.github.macpersia.planty_alexa_android.R
-import com.github.macpersia.planty_alexa_android.actions.adapter.ActionFragmentAdapter
-
-import java.util.ArrayList
 import com.amazon.identity.auth.device.AuthError
 import com.amazon.identity.auth.device.api.Listener
 import com.amazon.identity.auth.device.api.authorization.*
-import com.amazon.identity.auth.device.api.authorization.User
-import ee.ioc.phon.android.speechutils.Log
+import com.amazon.identity.auth.device.api.workflow.RequestContext
+import com.github.macpersia.planty_alexa_android.MainActivity
+import com.github.macpersia.planty_alexa_android.R
+import com.github.macpersia.planty_alexa_android.actions.adapter.ActionFragmentAdapter
+import java.util.*
 
 
 /**
@@ -28,6 +24,8 @@ import ee.ioc.phon.android.speechutils.Log
  */
 
 class ActionsFragment : BaseListenerFragment() {
+
+    final val TAG = ActionsFragment::class.java.simpleName
 
     protected override val title: String
         get() = getString(R.string.app_name)
@@ -90,6 +88,7 @@ class ActionsFragment : BaseListenerFragment() {
             override fun onSuccess(result: AuthorizeResult) {
                 /* Your app is now authorized for the requested scopes */
                 fetchUserProfile(requestContext.context)
+                MainActivity.sendAccessTokenAsEvent(requestContext.context, result.accessToken)
             }
 
             /* There was an error during the attempt to authorize the application. */
@@ -134,15 +133,15 @@ class ActionsFragment : BaseListenerFragment() {
 //                val zipcode = user.userPostalCode
 
 //                runOnUiThread(Runnable { updateProfileData(name, email, account, zipcode) })
-                Log.i(">>>> User: ${user}")
-                Log.i(">>>> User.name: ${user?.userName}")
-                Log.i(">>>> User.email: ${user?.userEmail}")
-                Log.i(">>>> User.account: ${user?.userId}")
+                Log.i(TAG, ">>>> User: ${user}")
+                Log.i(TAG, ">>>> User.name: ${user?.userName}")
+                Log.i(TAG, ">>>> User.email: ${user?.userEmail}")
+                Log.i(TAG, ">>>> User.account: ${user?.userId}")
             }
             /* There was an error during the attempt to get the profile. */
             override fun onError(ae: AuthError?) {
                 /* Retry or inform the user of the error */
-                Log.e(ActionsFragment::class.simpleName!!, ae.toString())
+                Log.e(TAG, ae.toString(), ae)
             }
         })
     }}

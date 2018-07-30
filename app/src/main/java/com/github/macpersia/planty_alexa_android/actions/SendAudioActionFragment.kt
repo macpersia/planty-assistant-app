@@ -9,16 +9,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-import com.willblaschko.android.alexa.requestbody.DataRequestBody
 import com.github.macpersia.planty_alexa_android.BuildConfig
 import com.github.macpersia.planty_alexa_android.R
+import com.willblaschko.android.alexa.requestbody.DataRequestBody
 import com.willblaschko.android.recorderview.RecorderView
-
-import java.io.IOException
-
 import ee.ioc.phon.android.speechutils.RawAudioRecorder
 import okio.BufferedSink
+import java.io.IOException
 
 
 /**
@@ -102,7 +99,7 @@ class SendAudioActionFragment : BaseListenerFragment() {
             MY_PERMISSIONS_REQUEST_RECORD_AUDIO -> {
                 // If request is cancelled, the result arrays are empty.
                 if (!(grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    activity.supportFragmentManager.beginTransaction().remove(this).commit()
+                    activity.fragmentManager.beginTransaction().remove(this).commit()
                 }
             }
         }

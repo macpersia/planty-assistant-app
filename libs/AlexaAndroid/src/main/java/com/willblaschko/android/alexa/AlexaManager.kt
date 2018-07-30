@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
 import android.util.Log
-import com.willblaschko.android.alexa.AlexaManager.Companion.mInstance
 import com.willblaschko.android.alexa.AuthorizationManager.Companion.createCodeVerifier
 import com.willblaschko.android.alexa.callbacks.AsyncCallback
 import com.willblaschko.android.alexa.callbacks.AuthorizationCallback
@@ -15,24 +14,19 @@ import com.willblaschko.android.alexa.interfaces.AvsResponse
 import com.willblaschko.android.alexa.interfaces.GenericSendEvent
 import com.willblaschko.android.alexa.interfaces.audioplayer.AvsPlayAudioItem
 import com.willblaschko.android.alexa.interfaces.response.ResponseParser
+import com.willblaschko.android.alexa.interfaces.response.ResponseParser.getBoundary
 import com.willblaschko.android.alexa.interfaces.speechrecognizer.SpeechSendAudio
 import com.willblaschko.android.alexa.interfaces.speechrecognizer.SpeechSendText
-import com.willblaschko.android.alexa.interfaces.speechrecognizer.SpeechSendVoice
 import com.willblaschko.android.alexa.interfaces.speechsynthesizer.AvsSpeakItem
 import com.willblaschko.android.alexa.requestbody.DataRequestBody
 import com.willblaschko.android.alexa.service.DownChannelService
 import com.willblaschko.android.alexa.system.AndroidSystemHandler
 import com.willblaschko.android.alexa.utility.Util
-
+import com.willblaschko.android.alexa.utility.Util.IDENTIFIER
+import okhttp3.Call
+import okio.BufferedSink
 import java.io.IOException
 import java.net.HttpURLConnection
-
-import okhttp3.Call
-import okhttp3.Response
-import okio.BufferedSink
-
-import com.willblaschko.android.alexa.interfaces.response.ResponseParser.getBoundary
-import com.willblaschko.android.alexa.utility.Util.IDENTIFIER
 
 /**
  * The overarching instance that handles all the state when requesting intents to the Alexa Voice Service servers, it creates all the required instances and confirms that users are logged in
@@ -42,9 +36,8 @@ import com.willblaschko.android.alexa.utility.Util.IDENTIFIER
  */
 class AlexaManager private constructor(context: Context, productId: String?) {
     val authorizationManager: AuthorizationManager
-    private var mSpeechSendVoice: SpeechSendVoice? = null
-    private var mSpeechSendText: SpeechSendText? = null
     private var mSpeechSendAudio: SpeechSendAudio? = null
+    private var mSpeechSendText: SpeechSendText? = null
     private lateinit var mVoiceHelper: VoiceHelper
     var urlEndpoint: String? = null
         set(url) {
@@ -62,14 +55,6 @@ class AlexaManager private constructor(context: Context, productId: String?) {
      */
     val isRecording = false
 
-
-    val speechSendVoice: SpeechSendVoice
-        get() {
-            if (mSpeechSendVoice == null) {
-                mSpeechSendVoice = SpeechSendVoice()
-            }
-            return mSpeechSendVoice!!
-        }
 
     val speechSendText: SpeechSendText
         get() {
@@ -537,7 +522,6 @@ class AlexaManager private constructor(context: Context, productId: String?) {
                 callback!!.complete()
             }
             manager.mSpeechSendAudio = null
-            manager.mSpeechSendVoice = null
             manager.mSpeechSendText = null
         }
     }

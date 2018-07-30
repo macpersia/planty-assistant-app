@@ -1,8 +1,8 @@
 package com.github.macpersia.planty_alexa_android.actions
 
+import android.app.Fragment
 import android.os.Bundle
 import android.support.annotation.RawRes
-import android.support.v4.app.Fragment
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem

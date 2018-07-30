@@ -100,15 +100,14 @@ class DownChannelService : Service() {
                                 handler!!.handleDirective(directive)
 
                                 //surface to our UI if it's up
-                                try {
-                                    val item = ResponseParser.parseDirective(directive)
-                                    EventBus.getDefault().post(item)
-                                } catch (e: IOException) {
-                                    e.printStackTrace()
-                                }
+                                val item = ResponseParser.parseDirective(directive)
+                                EventBus.getDefault().post(item)
+
+                            } catch (e: IOException) {
+                                Log.e(TAG, e.message, e)
 
                             } catch (e: Exception) {
-                                Log.e(TAG, "Bad line")
+                                Log.e(TAG, "Bad line", e)
                             }
 
                         }
@@ -158,7 +157,6 @@ class DownChannelService : Service() {
     }
 
     companion object {
-
-        private val TAG = "DownChannelService"
+        private val TAG = DownChannelService.javaClass.simpleName
     }
 }

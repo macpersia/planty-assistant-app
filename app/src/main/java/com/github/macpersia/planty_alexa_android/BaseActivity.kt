@@ -1,17 +1,18 @@
 package com.github.macpersia.planty_alexa_android
 
+import android.app.AlertDialog
 import android.app.Instrumentation
 import android.content.Context
 import android.media.AudioManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.KeyEvent
 import android.widget.Toast
-
+import com.github.macpersia.planty_alexa_android.actions.BaseListenerFragment
+import com.github.macpersia.planty_alexa_android.global.Constants.PRODUCT_ID
 import com.willblaschko.android.alexa.AlexaManager
 import com.willblaschko.android.alexa.audioplayer.AlexaAudioPlayer
 import com.willblaschko.android.alexa.callbacks.AsyncCallback
@@ -21,23 +22,13 @@ import com.willblaschko.android.alexa.interfaces.audioplayer.AvsPlayAudioItem
 import com.willblaschko.android.alexa.interfaces.audioplayer.AvsPlayContentItem
 import com.willblaschko.android.alexa.interfaces.audioplayer.AvsPlayRemoteItem
 import com.willblaschko.android.alexa.interfaces.errors.AvsResponseException
-import com.willblaschko.android.alexa.interfaces.playbackcontrol.AvsMediaNextCommandItem
-import com.willblaschko.android.alexa.interfaces.playbackcontrol.AvsMediaPauseCommandItem
-import com.willblaschko.android.alexa.interfaces.playbackcontrol.AvsMediaPlayCommandItem
-import com.willblaschko.android.alexa.interfaces.playbackcontrol.AvsMediaPreviousCommandItem
-import com.willblaschko.android.alexa.interfaces.playbackcontrol.AvsReplaceAllItem
-import com.willblaschko.android.alexa.interfaces.playbackcontrol.AvsReplaceEnqueuedItem
-import com.willblaschko.android.alexa.interfaces.playbackcontrol.AvsStopItem
+import com.willblaschko.android.alexa.interfaces.playbackcontrol.*
 import com.willblaschko.android.alexa.interfaces.speaker.AvsAdjustVolumeItem
 import com.willblaschko.android.alexa.interfaces.speaker.AvsSetMuteItem
 import com.willblaschko.android.alexa.interfaces.speaker.AvsSetVolumeItem
 import com.willblaschko.android.alexa.interfaces.speechrecognizer.AvsExpectSpeechItem
 import com.willblaschko.android.alexa.interfaces.speechsynthesizer.AvsSpeakItem
-import com.github.macpersia.planty_alexa_android.actions.BaseListenerFragment
-
-import java.util.ArrayList
-
-import com.github.macpersia.planty_alexa_android.global.Constants.PRODUCT_ID
+import java.util.*
 
 /**
  * @author will on 5/30/2016.

@@ -1,6 +1,22 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE"
+    }
+}
+
+apply plugin: "io.spring.dependency-management"
+
+dependencyManagement {
+    imports {
+        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.375'
+    }
+}
 
 if (file('signing.gradle').exists()) {
     apply from: 'signing.gradle'
@@ -9,21 +25,19 @@ if (file('signing.gradle').exists()) {
 }
 
 android {
-    //compileSdkVersion 24
     lintOptions {
         abortOnError false
     }
-    compileSdkVersion 23
+    compileSdkVersion 25
     buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "com.github.macpersia.planty_alexa_android"
-        minSdkVersion 21
+        minSdkVersion 25
 
-        //targetSdkVersion 24
-        targetSdkVersion 23
+        targetSdkVersion 25
         versionCode 5
         versionName "2.1.1"
-        multiDexEnabled true;
+        multiDexEnabled true
 
         // Added by Hadi, to support '@color/white' (https://stackoverflow.com/questions/46978566/references-to-other-resources-are-not-supported-by-build-time-png-generation)
         vectorDrawables.useSupportLibrary = true
@@ -58,19 +72,24 @@ android {
 }
 
 dependencies {
-    api fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
-    //api 'com.android.support:appcompat-v7:24.2.1'
-    api 'com.android.support:appcompat-v7:23.2.1'
-    //api 'com.android.support:recyclerview-v7:24.2.1'
-    api 'com.android.support:recyclerview-v7:23.2.1'
-    //api 'com.android.support:multidex:1.0.1'
-    api 'com.squareup.okhttp3:okhttp:3.2.0'
-    api project(path: ':libs:AlexaAndroid')
-    api project(path: ':libs:RecorderLevelView')
-    api project(path: ':libs:speechutils-master')
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.android.support:appcompat-v7:25.4.0'
+    implementation 'com.android.support:recyclerview-v7:25.4.0'
+    //implementation 'com.android.support:multidex:1.0.1'
+    //implementation 'com.squareup.okhttp3:okhttp:3.2.0'
+    implementation project(path: ':libs:AlexaAndroid')
+    implementation project(path: ':libs:RecorderLevelView')
+    implementation project(path: ':libs:speechutils-master')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    implementation('com.amazonaws:aws-java-sdk-lambda') {
+//        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
+//    implementation group: 'org.apache.httpcomponents', name: 'httpclient-android', version: '4.3.5.1'
+    testImplementation group: 'junit', name: 'junit', version: '4.11'
 }
+
 repositories {
     mavenCentral()
     google()

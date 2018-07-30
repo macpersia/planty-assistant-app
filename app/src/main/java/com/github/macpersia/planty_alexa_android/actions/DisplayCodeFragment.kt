@@ -1,18 +1,15 @@
 package com.github.macpersia.planty_alexa_android.actions
 
+import android.app.Fragment
 import android.os.Bundle
 import android.support.annotation.RawRes
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-
 import com.github.macpersia.planty_alexa_android.R
-
 import java.io.BufferedReader
 import java.io.IOException
-import java.io.InputStream
 import java.io.InputStreamReader
 
 /**
