@@ -77,17 +77,20 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:25.4.0'
     implementation 'com.android.support:recyclerview-v7:25.4.0'
     //implementation 'com.android.support:multidex:1.0.1'
-    //implementation 'com.squareup.okhttp3:okhttp:3.2.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.2.0'
     implementation project(path: ':libs:AlexaAndroid')
     implementation project(path: ':libs:RecorderLevelView')
     implementation project(path: ':libs:speechutils-master')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    implementation('com.amazonaws:aws-java-sdk-lambda') {
-//        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
-    }
-//    implementation group: 'org.apache.httpcomponents', name: 'httpclient-android', version: '4.3.5.1'
+//    implementation('com.amazonaws:aws-java-sdk-lambda') {
+////        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+//    }
+////    implementation group: 'org.apache.httpcomponents', name: 'httpclient-android', version: '4.3.5.1'
     testImplementation group: 'junit', name: 'junit', version: '4.11'
+
+
+//    implementation group: 'com.amazon.alexa', name: 'ask-sdk', version: '2.3.1'
 }
 
 repositories {

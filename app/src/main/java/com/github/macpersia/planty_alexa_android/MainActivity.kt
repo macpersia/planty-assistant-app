@@ -14,12 +14,15 @@ import com.amazon.identity.auth.device.api.authorization.AuthorizationManager.ge
 import com.amazon.identity.auth.device.api.authorization.AuthorizeResult
 import com.amazon.identity.auth.device.api.authorization.ProfileScope
 import com.amazon.identity.auth.device.api.authorization.Scope
-import com.amazonaws.regions.Regions
-import com.amazonaws.services.lambda.AWSLambdaAsyncClientBuilder
-import com.amazonaws.services.lambda.model.InvokeRequest
 import com.github.macpersia.planty_alexa_android.R.id.frame
 import com.github.macpersia.planty_alexa_android.actions.ActionsFragment
 import com.github.macpersia.planty_alexa_android.actions.BaseListenerFragment
+import com.github.macpersia.planty_alexa_android.global.Constants
+import com.willblaschko.android.alexa.AlexaManager
+import com.willblaschko.android.alexa.callbacks.ImplAsyncCallback
+import com.willblaschko.android.alexa.data.Event
+import com.willblaschko.android.alexa.interfaces.AvsResponse
+import java.util.*
 
 
 /**
@@ -161,40 +164,59 @@ class MainActivity : BaseActivity(), ActionsFragment.ActionFragmentInterface,
         private val TAG_FRAGMENT = "CurrentFragment"
 
         internal fun sendAccessTokenAsEvent(context: Context, accessToken: String?) {
-            val event = "ACCESS_TOKEN_RECEIVED: ${accessToken}"
+//            val event = "ACCESS_TOKEN_RECEIVED: ${accessToken}"
+            val event = Event.Builder()
+                    .setContext(Arrays.asList(Event.Builder()
+                            .setHeaderNamespace("AudioPlayer")
+                            .setHeaderName("PlaybackState")
+                            .setPayloadToken(accessToken!!)
+                            .setPlayloadOffsetInMilliseconds(0)
+                            .build().event!!))
+                    .setHeaderNamespace("System")
+                    .setHeaderName("SynchronizeState")
+                    .setHeaderMessageId(UUID.randomUUID().toString())
+                    .setPayloadToken(accessToken!!)
+                    .build().toJson()
 //            Log.i(TAG, ">>>> Sending event to Lambda: ${event}")
 //            sendEvenToLambda(event)
+
+            Log.i(TAG, ">>>> Sending event to Alexa...")
+            val instance = AlexaManager.getInstance(context, Constants.PRODUCT_ID)
+            instance.sendEvent(event, object : ImplAsyncCallback<AvsResponse, Exception?>() {
+                override fun success(result: AvsResponse) {
+                    Log.i(TAG, result.toString())
+                }
+                override fun failure(error: Exception?) {
+                    Log.e(TAG, error?.message, error)
+                }
+            })
+
+
+//            val apiConfig = DefaultApiConfiguration.builder()
+//                    .withApiEndpoint("https://api.amazonalexa.com/v3/events")
+//                    .withAuthorizationValue(instance.authorizationManager
+//                            .checkLoggedIn(context, object: AsyncCallback<AvsResponse, Exception?> {}))
+//                    .build()
+        }
+
+//        internal fun sendEvenToLambda(payload: String?) {
+//            val region = "us-east-1"
+//            val functionName = "handlePrototypingRequest"
+//            try {
+//                val client = AWSLambdaAsyncClientBuilder.standard()
+//                        .withRegion(Regions.fromName(region))
+//                        .build()
 //
-//            Log.i(TAG, ">>>> Sending event to Alexa...")
-//            val instance = AlexaManager.getInstance(context, Constants.PRODUCT_ID)
-//            instance.sendEvent(event, object : ImplAsyncCallback<AvsResponse, Exception?>() {
-//                override fun success(result: AvsResponse) {
-//                    Log.i(TAG, result.toString())
-//                }
-//                override fun failure(error: Exception?) {
-//                    Log.e(TAG, error?.message, error)
-//                }
-//            })
-        }
-
-        internal fun sendEvenToLambda(payload: String?) {
-            val region = "us-east-1"
-            val functionName = "handlePrototypingRequest"
-            try {
-                val client = AWSLambdaAsyncClientBuilder.standard()
-                        .withRegion(Regions.fromName(region))
-                        .build()
-
-                val request = InvokeRequest()
-                        .withFunctionName(functionName)
-                        .withPayload(payload)
-
-                val result = client.invoke(request)
-                Log.i(TAG, ">>>> Lambda result: $functionName: $result")
-
-            } catch (e: Throwable) {
-                Log.e(TAG, e.message, e)
-            }
-        }
+//                val request = InvokeRequest()
+//                        .withFunctionName(functionName)
+//                        .withPayload(payload)
+//
+//                val result = client.invoke(request)
+//                Log.i(TAG, ">>>> Lambda result: $functionName: $result")
+//
+//            } catch (e: Throwable) {
+//                Log.e(TAG, e.message, e)
+//            }
+//        }
     }
 }
