@@ -2,27 +2,13 @@ package com.github.macpersia.planty_alexa_android
 
 import android.app.Fragment
 import android.app.FragmentManager
-import android.content.Context
 import android.content.res.Resources
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.TextView
-import com.amazon.identity.auth.device.AuthError
-import com.amazon.identity.auth.device.api.Listener
-import com.amazon.identity.auth.device.api.authorization.AuthorizationManager.getToken
-import com.amazon.identity.auth.device.api.authorization.AuthorizeResult
-import com.amazon.identity.auth.device.api.authorization.ProfileScope
-import com.amazon.identity.auth.device.api.authorization.Scope
 import com.github.macpersia.planty_alexa_android.R.id.frame
 import com.github.macpersia.planty_alexa_android.actions.ActionsFragment
 import com.github.macpersia.planty_alexa_android.actions.BaseListenerFragment
-import com.github.macpersia.planty_alexa_android.global.Constants
-import com.willblaschko.android.alexa.AlexaManager
-import com.willblaschko.android.alexa.callbacks.ImplAsyncCallback
-import com.willblaschko.android.alexa.data.Event
-import com.willblaschko.android.alexa.interfaces.AvsResponse
-import java.util.*
 
 
 /**
@@ -52,21 +38,6 @@ class MainActivity : BaseActivity(), ActionsFragment.ActionFragmentInterface,
 
         val fragment = ActionsFragment()
         loadFragment(fragment, false)
-
-        val scopes = arrayOf<Scope>(ProfileScope.profile()/*, ProfileScope.postalCode()*/)
-        getToken(this.status?.context, scopes, object : Listener<AuthorizeResult, AuthError> {
-            override fun onSuccess(result: AuthorizeResult) {
-                val accessToken = result.accessToken
-                if (accessToken != null) {
-                    sendAccessTokenAsEvent(status?.context!!, accessToken)
-                } else {
-                    /* The user is not signed in */
-                }
-            }
-            override fun onError(ae: AuthError) {
-                /* The user is not signed in */
-            }
-        })
     }
 
     override fun startListening() {
@@ -162,61 +133,5 @@ class MainActivity : BaseActivity(), ActionsFragment.ActionFragmentInterface,
     companion object {
         private val TAG = MainActivity.javaClass.simpleName
         private val TAG_FRAGMENT = "CurrentFragment"
-
-        internal fun sendAccessTokenAsEvent(context: Context, accessToken: String?) {
-//            val event = "ACCESS_TOKEN_RECEIVED: ${accessToken}"
-            val event = Event.Builder()
-                    .setContext(Arrays.asList(Event.Builder()
-                            .setHeaderNamespace("AudioPlayer")
-                            .setHeaderName("PlaybackState")
-                            .setPayloadToken(accessToken!!)
-                            .setPlayloadOffsetInMilliseconds(0)
-                            .build().event!!))
-                    .setHeaderNamespace("System")
-                    .setHeaderName("SynchronizeState")
-                    .setHeaderMessageId(UUID.randomUUID().toString())
-                    .setPayloadToken(accessToken!!)
-                    .build().toJson()
-//            Log.i(TAG, ">>>> Sending event to Lambda: ${event}")
-//            sendEvenToLambda(event)
-
-            Log.i(TAG, ">>>> Sending event to Alexa...")
-            val instance = AlexaManager.getInstance(context, Constants.PRODUCT_ID)
-            instance.sendEvent(event, object : ImplAsyncCallback<AvsResponse, Exception?>() {
-                override fun success(result: AvsResponse) {
-                    Log.i(TAG, result.toString())
-                }
-                override fun failure(error: Exception?) {
-                    Log.e(TAG, error?.message, error)
-                }
-            })
-
-
-//            val apiConfig = DefaultApiConfiguration.builder()
-//                    .withApiEndpoint("https://api.amazonalexa.com/v3/events")
-//                    .withAuthorizationValue(instance.authorizationManager
-//                            .checkLoggedIn(context, object: AsyncCallback<AvsResponse, Exception?> {}))
-//                    .build()
-        }
-
-//        internal fun sendEvenToLambda(payload: String?) {
-//            val region = "us-east-1"
-//            val functionName = "handlePrototypingRequest"
-//            try {
-//                val client = AWSLambdaAsyncClientBuilder.standard()
-//                        .withRegion(Regions.fromName(region))
-//                        .build()
-//
-//                val request = InvokeRequest()
-//                        .withFunctionName(functionName)
-//                        .withPayload(payload)
-//
-//                val result = client.invoke(request)
-//                Log.i(TAG, ">>>> Lambda result: $functionName: $result")
-//
-//            } catch (e: Throwable) {
-//                Log.e(TAG, e.message, e)
-//            }
-//        }
     }
 }

@@ -13,7 +13,6 @@ import com.amazon.identity.auth.device.AuthError
 import com.amazon.identity.auth.device.api.Listener
 import com.amazon.identity.auth.device.api.authorization.*
 import com.amazon.identity.auth.device.api.workflow.RequestContext
-import com.github.macpersia.planty_alexa_android.MainActivity
 import com.github.macpersia.planty_alexa_android.R
 import com.github.macpersia.planty_alexa_android.actions.adapter.ActionFragmentAdapter
 import java.util.*
@@ -25,12 +24,12 @@ import java.util.*
 
 class ActionsFragment : BaseListenerFragment() {
 
-    final val TAG = ActionsFragment::class.java.simpleName
+    val TAG = ActionsFragment::class.java.simpleName
 
-    protected override val title: String
+    override val title: String
         get() = getString(R.string.app_name)
 
-    protected override val rawCode: Int
+    override val rawCode: Int
         get() = R.raw.code_base
 
     private val items: List<ActionFragmentAdapter.ActionFragmentItem>
@@ -49,28 +48,26 @@ class ActionsFragment : BaseListenerFragment() {
                     android.R.drawable.ic_menu_edit,
                     View.OnClickListener { loadFragment(SendTextActionFragment()) }))
 
-//            <ImageButton
-//            android:id="@+id/login_with_amazon"
-//            android:layout_width="wrap_content"
-//            android:layout_height="wrap_content"
-//            android:background="@color/colorPrimaryDark"
-//            android:onClick="authorize"
-//            android:src="@drawable/btnlwa_gold_loginwithamazon" />
-
-            val authorizeFun: (View) -> Unit = {
-                AuthorizationManager.authorize(
-                        AuthorizeRequest.Builder(requestContext)
-                                .addScopes(
-                                        ProfileScope.profile()
-                                        //, ProfileScope.postalCode()
-                                ).build())
-            }
-            items.add(ActionFragmentAdapter.ActionFragmentItem("Login with Amazon",
-                    android.R.drawable.ic_secure,
-                    View.OnClickListener(function = authorizeFun)))
+////            <ImageButton
+////            android:id="@+id/login_with_amazon"
+////            android:layout_width="wrap_content"
+////            android:layout_height="wrap_content"
+////            android:background="@color/colorPrimaryDark"
+////            android:onClick="authorize"
+////            android:src="@drawable/btnlwa_gold_loginwithamazon" />
+//            items.add(ActionFragmentAdapter.ActionFragmentItem("Login with Amazon",
+//                    android.R.drawable.ic_secure,
+//                    View.OnClickListener { it -> authorizeApp()}))
 
             return items
         }
+
+    private fun authorizeApp() {
+        val authReq = AuthorizeRequest.Builder(requestContext)
+                .addScopes(ProfileScope.profile()/*, ProfileScope.postalCode()*/)
+                .build()
+        AuthorizationManager.authorize(authReq)
+    }
 
 
     override fun startListening() {
@@ -88,7 +85,6 @@ class ActionsFragment : BaseListenerFragment() {
             override fun onSuccess(result: AuthorizeResult) {
                 /* Your app is now authorized for the requested scopes */
                 fetchUserProfile(requestContext.context)
-                MainActivity.sendAccessTokenAsEvent(requestContext.context, result.accessToken)
             }
 
             /* There was an error during the attempt to authorize the application. */
@@ -106,7 +102,7 @@ class ActionsFragment : BaseListenerFragment() {
 
     override fun onResume() {
         super.onResume()
-        requestContext.onResume();
+        requestContext.onResume()
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -130,14 +126,13 @@ class ActionsFragment : BaseListenerFragment() {
                 val name = user?.userName
                 val email = user?.userEmail
                 val account = user?.userId
-//                val zipcode = user.userPostalCode
+                //val zipcode = user.userPostalCode
 
-//                runOnUiThread(Runnable { updateProfileData(name, email, account, zipcode) })
-                Log.i(TAG, ">>>> User: ${user}")
+                //runOnUiThread(Runnable { updateProfileData(name, email, account, zipcode) })
                 Log.i(TAG, ">>>> User.name: ${user?.userName}")
                 Log.i(TAG, ">>>> User.email: ${user?.userEmail}")
                 Log.i(TAG, ">>>> User.account: ${user?.userId}")
-            }
+}
             /* There was an error during the attempt to get the profile. */
             override fun onError(ae: AuthError?) {
                 /* Retry or inform the user of the error */

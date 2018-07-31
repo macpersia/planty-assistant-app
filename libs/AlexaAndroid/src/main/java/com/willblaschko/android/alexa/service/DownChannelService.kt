@@ -103,11 +103,8 @@ class DownChannelService : Service() {
                                 val item = ResponseParser.parseDirective(directive)
                                 EventBus.getDefault().post(item)
 
-                            } catch (e: IOException) {
-                                Log.e(TAG, e.message, e)
-
                             } catch (e: Exception) {
-                                Log.e(TAG, "Bad line", e)
+                                Log.e(TAG, "Bad line: ${e.message}")
                             }
 
                         }
