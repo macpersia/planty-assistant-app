@@ -15,6 +15,7 @@ import com.amazon.identity.auth.device.api.authorization.*
 import com.amazon.identity.auth.device.api.workflow.RequestContext
 import com.github.macpersia.planty_alexa_android.R
 import com.github.macpersia.planty_alexa_android.actions.adapter.ActionFragmentAdapter
+import com.willblaschko.android.alexa.AlexaManager
 import java.util.*
 
 
@@ -48,25 +49,20 @@ class ActionsFragment : BaseListenerFragment() {
                     android.R.drawable.ic_menu_edit,
                     View.OnClickListener { loadFragment(SendTextActionFragment()) }))
 
-////            <ImageButton
-////            android:id="@+id/login_with_amazon"
-////            android:layout_width="wrap_content"
-////            android:layout_height="wrap_content"
-////            android:background="@color/colorPrimaryDark"
-////            android:onClick="authorize"
-////            android:src="@drawable/btnlwa_gold_loginwithamazon" />
-//            items.add(ActionFragmentAdapter.ActionFragmentItem("Login with Amazon",
-//                    android.R.drawable.ic_secure,
-//                    View.OnClickListener { it -> authorizeApp()}))
+            items.add(ActionFragmentAdapter.ActionFragmentItem("Login with Amazon",
+                    R.drawable.btnlwa_gold_a,
+                    View.OnClickListener { it -> authorizeApp()}))
 
             return items
         }
 
     private fun authorizeApp() {
-        val authReq = AuthorizeRequest.Builder(requestContext)
-                .addScopes(ProfileScope.profile()/*, ProfileScope.postalCode()*/)
-                .build()
-        AuthorizationManager.authorize(authReq)
+//        val authReq = AuthorizeRequest.Builder(requestContext)
+//                .addScopes(ProfileScope.profile()/*, ProfileScope.postalCode()*/)
+//                .build()
+//        AuthorizationManager.authorize(authReq)
+        AlexaManager.getInstance(requestContext.context)
+                .logIn(null, true)
     }
 
 

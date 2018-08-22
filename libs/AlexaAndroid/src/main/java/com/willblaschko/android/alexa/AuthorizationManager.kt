@@ -2,10 +2,9 @@ package com.willblaschko.android.alexa
 
 import android.content.Context
 import android.os.Bundle
-import android.provider.Settings
+import android.provider.Settings.Secure
 import android.util.Base64
 import android.util.Log
-
 import com.amazon.identity.auth.device.AuthError
 import com.amazon.identity.auth.device.authorization.BuildConfig
 import com.amazon.identity.auth.device.authorization.api.AmazonAuthorizationManager
@@ -14,10 +13,9 @@ import com.amazon.identity.auth.device.authorization.api.AuthzConstants
 import com.willblaschko.android.alexa.callbacks.AsyncCallback
 import com.willblaschko.android.alexa.callbacks.AuthorizationCallback
 import com.willblaschko.android.alexa.utility.Util
-
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
-import java.util.Random
+import java.util.*
 
 /**
  * A static instance class that manages Authentication with the Amazon servers, it uses the TokenManager helper class to do most of its operations
@@ -133,6 +131,7 @@ class AuthorizationManager
     init {
         try {
             amazonAuthorizationManager = AmazonAuthorizationManager(mContext, Bundle.EMPTY)
+
         } catch (e: IllegalArgumentException) {
             //This error will be thrown if the main project doesn't have the assets/api_key.txt file in it--this contains the security credentials from Amazon
             Util.showAuthToast(mContext, "APIKey is incorrect or does not exist.")
@@ -147,7 +146,7 @@ class AuthorizationManager
      * @param callback
      */
     fun checkLoggedIn(context: Context, callback: AsyncCallback<Boolean, Throwable>) {
-        TokenManager.getAccessToken(amazonAuthorizationManager!!, context, object : TokenManager.TokenCallback {
+        TokenManager.getAccessToken(amazonAuthorizationManager, context, object : TokenManager.TokenCallback {
             override fun onSuccess(token: String) {
                 callback.success(true)
             }
@@ -177,27 +176,34 @@ class AuthorizationManager
     fun authorizeUser(callback: AuthorizationCallback?) {
         mCallback = callback
 
-        val PRODUCT_DSN = Settings.Secure.getString(mContext.contentResolver,
-                Settings.Secure.ANDROID_ID)
+        val PRODUCT_DSN = Secure.getString(mContext.contentResolver, Secure.ANDROID_ID)
 
         val options = Bundle()
-        val scope_data = "{\"alexa:all\":{\"productID\":\"" + mProductId +
-                "\", \"productInstanceAttributes\":{\"deviceSerialNumber\":\"" +
-                PRODUCT_DSN + "\"}}}"
+        val scope_data = """
+            {
+                "alexa:all": {
+                    "productID": "$mProductId",
+                    "productInstanceAttributes": {
+                        "deviceSerialNumber": "$PRODUCT_DSN"
+                    }
+                }
+            }
+        """
         options.putString(AuthzConstants.BUNDLE_KEY.SCOPE_DATA.`val`, scope_data)
-
         options.putBoolean(AuthzConstants.BUNDLE_KEY.GET_AUTH_CODE.`val`, true)
         options.putString(AuthzConstants.BUNDLE_KEY.CODE_CHALLENGE.`val`, codeChallenge)
         options.putString(AuthzConstants.BUNDLE_KEY.CODE_CHALLENGE_METHOD.`val`, "S256")
 
-        amazonAuthorizationManager!!.authorize(APP_SCOPES, options, authListener)
+        amazonAuthorizationManager.authorize(APP_SCOPES, options, authListener)
     }
 
     companion object {
 
         private val TAG = "AuthorizationHandler"
-        private val APP_SCOPES = arrayOf("alexa:all")
 
+        // Changed by Hadi
+        //private val APP_SCOPES = arrayOf("alexa:all")
+        private val APP_SCOPES = arrayOf("alexa:all", "profile")
 
         private val CODE_VERIFIER = "code_verifier"
 

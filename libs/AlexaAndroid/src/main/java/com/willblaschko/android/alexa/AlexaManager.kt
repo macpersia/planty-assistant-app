@@ -142,29 +142,31 @@ class AlexaManager private constructor(context: Context, productId: String?) {
      * Send a log in request to the Amazon Authentication Manager
      * @param callback state callback
      */
-    fun logIn(callback: AuthorizationCallback?) {
+    fun logIn(callback: AuthorizationCallback?, force: Boolean = false) {
         //check if we're already logged in
-        authorizationManager.checkLoggedIn(mContext, object : AsyncCallback<Boolean, Throwable> {
-            override fun start() {}
-            override fun success(result: Boolean) {
-                //if we are, return a success
-                if (callback != null)
-                    if (result) {
-                        callback!!.onSuccess()
-                    } else {
-                        //otherwise start the authorization process
-                        authorizationManager.authorizeUser(callback)
-                    }
-            }
-            override fun failure(error: Throwable) {
-                callback?.onError(Exception(error))
-            }
+        if (force)
+            authorizationManager.authorizeUser(callback)
+        else
+            authorizationManager.checkLoggedIn(mContext, object : AsyncCallback<Boolean, Throwable> {
+                override fun start() {}
+                override fun success(result: Boolean) {
+                    //if we are, return a success
+                    if (callback != null)
+                        if (result) {
+                            callback.onSuccess()
+                        } else {
+                            //otherwise start the authorization process
+                            authorizationManager.authorizeUser(callback)
+                        }
+                }
+                override fun failure(error: Throwable) {
+                    callback?.onError(Exception(error))
+                }
 
-            override fun complete() {
+                override fun complete() {
 
-            }
-        })
-
+                }
+            })
     }
 
 
@@ -200,7 +202,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
                     object : AsyncTask<Void, Void, AvsResponse?>() {
                         override fun doInBackground(vararg params: Void): AvsResponse? {
                             //get our access token
-                            TokenManager.getAccessToken(authorizationManager.amazonAuthorizationManager!!, mContext, object : TokenManager.TokenCallback {
+                            TokenManager.getAccessToken(authorizationManager.amazonAuthorizationManager, mContext, object : TokenManager.TokenCallback {
                                 override fun onSuccess(token: String) {
                                     try {
                                         speechSendText.sendText(mContext, url, token, text, AsyncEventHandler(this@AlexaManager, callback))
@@ -427,7 +429,7 @@ class AlexaManager private constructor(context: Context, productId: String?) {
                     //set our URL
                     val url = eventsUrl
                     //get our access token
-                    TokenManager.getAccessToken(authorizationManager.amazonAuthorizationManager!!, mContext, object : TokenManager.TokenCallback {
+                    TokenManager.getAccessToken(authorizationManager.amazonAuthorizationManager, mContext, object : TokenManager.TokenCallback {
                         override fun onSuccess(token: String) {
                             //do this off the main thread
                             object : AsyncTask<Void, Void, AvsResponse?>() {

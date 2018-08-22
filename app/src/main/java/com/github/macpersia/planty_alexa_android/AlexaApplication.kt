@@ -2,7 +2,6 @@ package com.github.macpersia.planty_alexa_android
 
 import android.app.Application
 import android.util.Log
-
 import com.github.macpersia.planty_alexa_android.utility.SigningKey
 
 /**
@@ -25,8 +24,9 @@ class AlexaApplication: Application() {
 
         private val TAG = AlexaApplication.javaClass.simpleName
 
-        //Our Amazon application product ID, this is passed to the server when we authenticate
-        private val PRODUCT_ID = "interactive_conversation"
+// Commented by Hadi
+//        //Our Amazon application product ID, this is passed to the server when we authenticate
+//        private val PRODUCT_ID = "interactive_conversation"
 
         //Our Application instance if we need to reference it directly
         /**
