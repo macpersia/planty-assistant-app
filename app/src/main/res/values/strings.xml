@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Planty Alexa Voice Library</string>
+    <string name="app_name">Planty Assistant App</string>
 
     <string name="status_listening">LISTENING…</string>
     <string name="status_processing">PROCESSING…</string>
