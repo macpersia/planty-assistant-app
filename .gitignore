@@ -42,12 +42,8 @@ app/debug.keystore
 app/release.keystore
 
 # signings
-app/signing.gradle
-app/signing.gradle.initial
-app/signing.gradle.planty
+app/signing.gradle*
 
 # api keys
-app/src/main/assets/api_key.txt
-app/src/main/assets/api_key.txt.debug
-app/src/main/assets/api_key.txt.release
+app/src/main/assets/api_key.txt*
 
