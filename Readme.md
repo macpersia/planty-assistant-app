@@ -14,7 +14,7 @@ Library updated with functionality for the Alexa [v20160207 API version](https:/
 
 ### Sample Application
 
-Curious about what the library can do? A quick example of the three main functions (live recorded audio events, text-to-speech intents, prerecorded audio intents), plus sample code can be found in the [sample app](https://play.google.com/store/apps/details?id=com.willblaschko.android.alexavoicelibrary)
+Curious about what the library can do? A quick example of the three main functions (live recorded audio events, text-to-speech intents, prerecorded audio intents), plus sample code can be found in the [sample app](https://play.google.com/store/apps/details?id=com.github.macpersia.alexavoicelibrary)
 
 #### Compiling and running the sample application
 * Follow the process for creating a connected device detailed at the Amazon link at the top of the Readme.

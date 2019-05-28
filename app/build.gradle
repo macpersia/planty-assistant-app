@@ -1,43 +1,67 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE"
+    }
+}
+
+apply plugin: "io.spring.dependency-management"
+
+dependencyManagement {
+    imports {
+        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.375'
+    }
+}
 
 if (file('signing.gradle').exists()) {
     apply from: 'signing.gradle'
-}else{
-    throw new TaskExecutionException(null, new Exception("Unable to find signing.gradle, please replace Android buildTypes > signing configs with your own configuration."));
+} else {
+    throw new TaskExecutionException("Unable to find signing.gradle, please replace Android buildTypes > signing configs with your own configuration.");
 }
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '25.0.0'
-
+    lintOptions {
+        abortOnError false
+    }
+    compileSdkVersion 25
+    buildToolsVersion '27.0.3'
     defaultConfig {
-        applicationId "com.willblaschko.android.alexavoicelibrary"
-        minSdkVersion 21
+        applicationId "com.github.macpersia.planty_alexa_android"
+        minSdkVersion 25
 
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 5
         versionName "2.1.1"
-        multiDexEnabled true;
+        multiDexEnabled true
+
+        // Added by Hadi, to support '@color/white' (https://stackoverflow.com/questions/46978566/references-to-other-resources-are-not-supported-by-build-time-png-generation)
+        vectorDrawables.useSupportLibrary = true
     }
 
+    // lintOptions {
+    //     abortOnError false
+    // }
 
     buildTypes {
-        debug{
+        debug {
             versionNameSuffix " Debug"
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.releaseConfig
+            signingConfig signingConfigs.debug
         }
         release {
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.releaseConfig
+            signingConfig signingConfigs.release
         }
     }
-
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
@@ -48,16 +72,29 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:recyclerview-v7:24.2.1'
-    compile 'com.android.support:multidex:1.0.1'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:25.4.0'
+    implementation 'com.android.support:recyclerview-v7:25.4.0'
+    //implementation 'com.android.support:multidex:1.0.1'
+    implementation 'com.squareup.okhttp3:okhttp:3.2.0'
+    implementation project(path: ':libs:AlexaAndroid')
+    implementation project(path: ':libs:RecorderLevelView')
+    implementation project(path: ':libs:speechutils-master')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    compile 'com.squareup.okhttp3:okhttp:3.2.0'
-    compile project(path: ':libs:AlexaAndroid')
-    compile project(path: ':libs:RecorderLevelView')
-    compile project(path: ':libs:speechutils-master')
+//    implementation('com.amazonaws:aws-java-sdk-lambda') {
+////        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+//    }
+////    implementation group: 'org.apache.httpcomponents', name: 'httpclient-android', version: '4.3.5.1'
+    testImplementation group: 'junit', name: 'junit', version: '4.11'
 
+
+//    implementation group: 'com.amazon.alexa', name: 'ask-sdk', version: '2.3.1'
+}
+
+repositories {
+    mavenCentral()
+    google()
 }
 

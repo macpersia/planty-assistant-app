@@ -36,3 +36,14 @@ javadoc/
 
 #NDK
 obj/
+
+# keystores
+app/debug.keystore
+app/release.keystore
+
+# signings
+app/signing.gradle*
+
+# api keys
+app/src/main/assets/api_key.txt*
+
