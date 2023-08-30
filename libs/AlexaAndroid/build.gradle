@@ -1,20 +1,19 @@
 buildscript {
-    ext.kotlin_version = '1.2.51'
+    ext.kotlin_version = '1.9.10'
 
     repositories {
         mavenCentral()
-        jcenter()
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.3'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.1'
+        classpath 'com.android.tools.build:gradle:8.1.1'
+        //classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.1'
     }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.jfrog.bintray'
+// apply plugin: 'com.jfrog.bintray'
 
 def versionMajor = 2
 def versionMinor = 4
@@ -27,64 +26,65 @@ ext {
     bintrayRepo = 'maven'
     bintrayName = 'AlexaAndroid'
 
-    publishedGroupId = 'com.willblaschko.android.alexa'
+    publishedGroupId = 'be.planty.android.alexa'
     libraryName = 'AlexaAndroid'
     artifact = 'AlexaAndroid'
 
     libraryDescription = 'A library to abstract access to the Amazon Alexa service for Android applications.'
 
-    siteUrl = 'https://github.com/willblaschko/AlexaAndroid'
-    gitUrl = 'https://github.com/willblaschko/AlexaAndroid.git'
+    siteUrl = 'https://github.com/macpersia/planty-assistant-app'
+    gitUrl = 'https://github.com/macpersia/planty-assistant-app.git'
 
     libraryVersion = versionMajorMinorPatch
 
-
-    developerId = 'willblaschko'
-    developerName = 'Will Blaschko'
-    developerEmail = 'will.blaschko@gmail.com'
+    developerId = 'macperisa'
 
     licenseName = 'GPL 2.0'
-    licenseUrl = 'https://github.com/willblaschko/AlexaAndroid/blob/master/LICENSE.txt'
+    licenseUrl = 'https://github.com/macperia/planty-assistant-app/blob/master/LICENSE.txt'
     allLicenses = ["GPL-2.0"]
 }
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
     //api 'com.intellij:annotations:+@jar'
-    api 'com.google.code.gson:gson:2.7'
-    api 'commons-io:commons-io:2.5'
-    api 'com.squareup.okhttp3:okhttp:3.6.0'
-    api 'org.greenrobot:eventbus:3.0.0'
+    api 'com.google.code.gson:gson:2.10.1'
+    api 'commons-io:commons-io:2.12.0'
+    api 'com.squareup.okhttp3:okhttp:3.10.0'
+    api 'org.greenrobot:eventbus:3.3.1'
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-    api 'org.apache.commons:commons-lang3:3.0'
+    api 'org.apache.commons:commons-lang3:3.13.0'
     //compile 'com.google.android.gms:play-services-base:9.6.1'
-    api 'com.google.android.gms:play-services-base:9.4.0'
-    testImplementation 'junit:junit:4.12'
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    api 'com.google.android.gms:play-services-base:18.2.0'
+    testImplementation 'junit:junit:4.13.2'
+    //api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
 android {
+    namespace "be.planty.android.alexa"
+    buildFeatures {
+        buildConfig = true
+    }
     signingConfigs {
     }
-    compileSdkVersion 23
-//    buildToolsVersion '25.0.0'
-    buildToolsVersion '27.0.3'
+    compileSdk 31
     defaultConfig {
-        minSdkVersion 21
-        //targetSdkVersion 24
-        targetSdkVersion 23
-        versionName versionMajorMinorPatch
+        minSdkVersion 30
+        targetSdkVersion 31
     }
-    lintOptions {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/LICENSE.txt', 'META-INF/NOTICE.txt', 'META-INF/DEPENDENCIES', 'META-INF/NOTICE', 'META-INF/LICENSE']
+        }
+    }
+    lint {
         abortOnError false
     }
-    packagingOptions {
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/LICENSE'
-    }
+    buildToolsVersion = '33.0.1'
 }
 
 tasks.withType(Javadoc) {
@@ -93,8 +93,6 @@ tasks.withType(Javadoc) {
     options.addStringOption('charSet', 'UTF-8')
 }
 
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
 repositories {
     mavenCentral()
 }

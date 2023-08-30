@@ -47,3 +47,6 @@ app/signing.gradle*
 # api keys
 app/src/main/assets/api_key.txt*
 
+/app/src/main/assets/api_key.release.txt
+/app/src/main/assets/api_key.debug.txt
+

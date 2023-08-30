@@ -1,5 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.github.macpersia.planty_alexa_android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-feature
         android:name="android.software.leanback"
@@ -7,6 +6,13 @@
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,7 +23,8 @@
         android:banner="@color/black">
 
         <activity android:name=".MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -28,7 +35,8 @@
         </activity>
 
         <activity android:name=".LoginWebViewActivity"
-                  android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
+                  android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -40,30 +48,11 @@
             </intent-filter>
         </activity>
 
-        <!--
-        &lt;!&ndash; required so we can get back the result of our authentication //&ndash;&gt;
-                <activity
-                    android:name="com.amazon.identity.auth.device.authorization.AuthorizationActivity"
-                    android:allowTaskReparenting="true"
-                    android:launchMode="singleTask"
-                    android:theme="@android:style/Theme.NoDisplay" >
-                    <intent-filter>
-                        <action android:name="android.intent.action.VIEW" />
-
-                        <category android:name="android.intent.category.DEFAULT" />
-                        <category android:name="android.intent.category.BROWSABLE" />
-
-                        &lt;!&ndash; host should be our application package //&ndash;&gt;
-                        &lt;!&ndash;<data android:host="com.github.macpersia.planty_alexa_android" android:scheme="amzn" />&ndash;&gt;
-                        <data android:host="${applicationId}" android:scheme="amzn" />
-                    </intent-filter>
-                </activity>
-        -->
-
         <activity android:name="com.amazon.identity.auth.device.workflow.WorkflowActivity"
             android:theme="@android:style/Theme.NoDisplay"
             android:allowTaskReparenting="true"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

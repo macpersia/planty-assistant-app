@@ -1,3 +1,9 @@
+
+``
+> The initial code was forked from:
+> https://github.com/willblaschko/AlexaAndroid/blob/master/app/src/main/java/com/willblaschko/android/alexavoicelibrary/global/Constants.java#L8   
+``
+
 # Alexa Voice Library
 
 =======
@@ -14,7 +20,8 @@ Library updated with functionality for the Alexa [v20160207 API version](https:/
 
 ### Sample Application
 
-Curious about what the library can do? A quick example of the three main functions (live recorded audio events, text-to-speech intents, prerecorded audio intents), plus sample code can be found in the [sample app](https://play.google.com/store/apps/details?id=com.github.macpersia.alexavoicelibrary)
+[//]: # (TODO: Update the link below)
+~~Curious about what the library can do? A quick example of the three main functions (live recorded audio events, text-to-speech intents, prerecorded audio intents), plus sample code can be found in the [sample app](https://play.google.com/store/apps/details?id=com.github.macpersia.alexavoicelibrary)~~
 
 #### Compiling and running the sample application
 * Follow the process for creating a connected device detailed at the Amazon link at the top of the Readme.
@@ -24,7 +31,8 @@ Curious about what the library can do? A quick example of the three main functio
 
 ### Production Application
 
-Or see what the library can do when converted into a full package, complete with optional always-on listener: [Alexa Listens](https://play.google.com/store/apps/details?id=com.willblaschko.android.alexalistens)
+[//]: # (TODO: Update the link below)
+~~Or see what the library can do when converted into a full package, complete with optional always-on listener: [Alexa Listens](https://play.google.com/store/apps/details?id=be.planty.assistant.applistens)~~
 
 ## Using the Library
 
@@ -32,24 +40,9 @@ Most of the library can be accessed through the [AlexaManager](http://willblasch
 
 ### Installation
 
-* Ensure you're pulling from jcenter() for your project (project-level build.gradle):
-```java
-buildscript {
-    repositories {
-        jcenter()
-    }
-    ...
-}
-
-allprojects {
-    repositories {
-        jcenter()
-    }
-}
-```
 * Add the library to your imports (application-level build.gradle):
 ```java
-compile 'com.willblaschko.android.alexa:AlexaAndroid:2.4.2'
+compile 'be.planty.assistant.app:AlexaAndroid:2.4.2'
 ```
 * Follow the process for creating a connected device detailed in the Amazon link at the top of the Readme.
 * Follow the instructions for adding your key and preparing the Login with Amazon activity from the ['Login with Amazon' Android Project guide](https://developer.amazon.com/public/apis/engage/login-with-amazon/docs/create_android_project.html)
