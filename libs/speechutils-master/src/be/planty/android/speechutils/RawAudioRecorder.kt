@@ -16,6 +16,9 @@
 
 package be.planty.android.speechutils
 
+import android.Manifest.permission.RECORD_AUDIO
+import androidx.annotation.RequiresPermission
+
 /**
  *
  * Records raw audio using SpeechRecord and stores it into a byte array as
@@ -56,10 +59,12 @@ class RawAudioRecorder
  * @param audioSource Identifier of the audio source (e.g. microphone)
  * @param sampleRate  Sample rate (e.g. 16000)
  */
-@JvmOverloads constructor(
-        audioSource: Int = AudioRecorder.DEFAULT_AUDIO_SOURCE,
-        sampleRate: Int = AudioRecorder.DEFAULT_SAMPLE_RATE)
-    : AbstractAudioRecorder(audioSource, sampleRate) {
+@RequiresPermission(RECORD_AUDIO)
+@JvmOverloads
+constructor(
+    audioSource: Int = AudioRecorder.DEFAULT_AUDIO_SOURCE,
+    sampleRate: Int = AudioRecorder.DEFAULT_SAMPLE_RATE
+) : AbstractAudioRecorder(audioSource, sampleRate) {
 
     override val wsArgs: String
         get() = "?content-type=audio/x-raw,+layout=(string)interleaved,+rate=(int)$sampleRate,+format=(string)S16LE,+channels=(int)1"
@@ -67,7 +72,8 @@ class RawAudioRecorder
     init {
         try {
             val bufferSize = bufferSize
-            val framePeriod = bufferSize / (2 * AudioRecorder.RESOLUTION_IN_BYTES.toInt() * AudioRecorder.CHANNELS.toInt())
+            val framePeriod =
+                bufferSize / (2 * AudioRecorder.RESOLUTION_IN_BYTES.toInt() * AudioRecorder.CHANNELS.toInt())
             createRecorder(audioSource, sampleRate, bufferSize)
             createBuffer(framePeriod)
             state = AudioRecorder.State.READY
@@ -76,7 +82,4 @@ class RawAudioRecorder
         }
 
     }
-
-//    @JvmOverloads
-//    constructor(sampleRate: Int) : this(AudioRecorder.DEFAULT_AUDIO_SOURCE, sampleRate) {}
 }

@@ -16,12 +16,15 @@
 
 package be.planty.android.speechutils
 
+import android.Manifest.permission.RECORD_AUDIO
 import android.media.AudioFormat
 import android.media.AudioRecord
-
+import androidx.annotation.RequiresPermission
 import be.planty.android.speechutils.utils.AudioUtils
 
-abstract class AbstractAudioRecorder protected constructor(audioSource: Int, protected val sampleRate: Int) : AudioRecorder {
+abstract class AbstractAudioRecorder
+@RequiresPermission(RECORD_AUDIO)
+protected constructor(audioSource: Int, protected val sampleRate: Int) : AudioRecorder {
 
     private var mRecorder: SpeechRecord? = null
 
@@ -54,12 +57,14 @@ abstract class AbstractAudioRecorder protected constructor(audioSource: Int, pro
 
     protected val bufferSize: Int
         get() {
-            var minBufferSizeInBytes = AudioRecord.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_IN_MONO, RESOLUTION)
+            var minBufferSizeInBytes =
+                AudioRecord.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_IN_MONO, RESOLUTION)
             if (minBufferSizeInBytes == AudioRecord.ERROR_BAD_VALUE) {
                 throw IllegalArgumentException("SpeechRecord.getMinBufferSize: parameters not supported by hardware")
             } else if (minBufferSizeInBytes == AudioRecord.ERROR) {
                 Log.e("SpeechRecord.getMinBufferSize: unable to query hardware for output properties")
-                minBufferSizeInBytes = sampleRate * (120 / 1000) * AudioRecorder.RESOLUTION_IN_BYTES.toInt() * AudioRecorder.CHANNELS.toInt()
+                minBufferSizeInBytes =
+                    sampleRate * (120 / 1000) * AudioRecorder.RESOLUTION_IN_BYTES.toInt() * AudioRecorder.CHANNELS.toInt()
             }
             val bufferSize = BUFFER_SIZE_MUTLIPLIER * minBufferSizeInBytes
             Log.i("SpeechRecord buffer size: $bufferSize, min size = $minBufferSizeInBytes")
@@ -138,14 +143,24 @@ abstract class AbstractAudioRecorder protected constructor(audioSource: Int, pro
 
     init {
         // E.g. 1 second of 16kHz 16-bit mono audio takes 32000 bytes.
-        mOneSec = AudioRecorder.RESOLUTION_IN_BYTES.toInt() * AudioRecorder.CHANNELS.toInt() * this.sampleRate
+        mOneSec =
+            AudioRecorder.RESOLUTION_IN_BYTES.toInt() * AudioRecorder.CHANNELS.toInt() * this.sampleRate
         // TODO: replace 35 with the max length of the recording
         mRecording = ByteArray(mOneSec * 35)
     }
 
-
+    @RequiresPermission(RECORD_AUDIO)
     protected fun createRecorder(audioSource: Int, sampleRate: Int, bufferSize: Int) {
-        mRecorder = SpeechRecord(audioSource, sampleRate, AudioFormat.CHANNEL_IN_MONO, RESOLUTION, bufferSize, false, false, false)
+        mRecorder = SpeechRecord(
+            audioSource,
+            sampleRate,
+            AudioFormat.CHANNEL_IN_MONO,
+            RESOLUTION,
+            bufferSize,
+            false,
+            false,
+            false
+        )
         if (speechRecordState != AudioRecord.STATE_INITIALIZED) {
             throw IllegalStateException("SpeechRecord initialization failed")
         }
@@ -153,7 +168,8 @@ abstract class AbstractAudioRecorder protected constructor(audioSource: Int, pro
 
     // TODO: remove
     protected fun createBuffer(framePeriod: Int) {
-        mBuffer = ByteArray(framePeriod * AudioRecorder.RESOLUTION_IN_BYTES.toInt() * AudioRecorder.CHANNELS.toInt())
+        mBuffer =
+            ByteArray(framePeriod * AudioRecorder.RESOLUTION_IN_BYTES.toInt() * AudioRecorder.CHANNELS.toInt())
     }
 
     /**
@@ -161,7 +177,8 @@ abstract class AbstractAudioRecorder protected constructor(audioSource: Int, pro
      *
      * @return bytes that have been recorded since this method was last called
      */
-    @Synchronized override fun consumeRecordingAndTruncate(): ByteArray {
+    @Synchronized
+    override fun consumeRecordingAndTruncate(): ByteArray {
         val len = consumedLength
         val bytes = getCurrentRecording(len)
         setRecordedLength(0)
@@ -214,7 +231,8 @@ abstract class AbstractAudioRecorder protected constructor(audioSource: Int, pro
     /**
      * @return bytes that have been recorded since this method was last called
      */
-    @Synchronized override fun consumeRecording(): ByteArray {
+    @Synchronized
+    override fun consumeRecording(): ByteArray {
         val bytes = getCurrentRecording(consumedLength)
         consumedLength = length
         return bytes
@@ -239,7 +257,8 @@ abstract class AbstractAudioRecorder protected constructor(audioSource: Int, pro
      * The object can no longer be used and the reference should be
      * set to null after a call to release().
      */
-    @Synchronized override fun release() {
+    @Synchronized
+    override fun release() {
         if (mRecorder != null) {
             if (mRecorder!!.recordingState == AudioRecord.RECORDSTATE_RECORDING) {
                 stop()
@@ -338,7 +357,12 @@ abstract class AbstractAudioRecorder protected constructor(audioSource: Int, pro
 
 
         fun getRecordingAsWav(pcm: ByteArray, sampleRate: Int): ByteArray {
-            return AudioUtils.getRecordingAsWav(pcm, sampleRate, AudioRecorder.RESOLUTION_IN_BYTES, AudioRecorder.CHANNELS)
+            return AudioUtils.getRecordingAsWav(
+                pcm,
+                sampleRate,
+                AudioRecorder.RESOLUTION_IN_BYTES,
+                AudioRecorder.CHANNELS
+            )
         }
 
 

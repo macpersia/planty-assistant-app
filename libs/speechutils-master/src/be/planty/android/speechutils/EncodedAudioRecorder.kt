@@ -16,22 +16,28 @@
 
 package be.planty.android.speechutils
 
+import android.Manifest.permission.RECORD_AUDIO
 import android.annotation.TargetApi
 import android.media.AudioRecord
 import android.media.MediaCodec
 import android.media.MediaFormat
 import android.os.Build
-
-import java.nio.ByteBuffer
-
+import androidx.annotation.RequiresPermission
 import be.planty.android.speechutils.utils.AudioUtils
+import java.nio.ByteBuffer
 
 /**
  * Based on https://android.googlesource.com/platform/cts/+/jb-mr2-release/tests/tests/media/src/android/media/cts/EncoderTest.java
  * Requires Android v4.1 / API 16 / JELLY_BEAN
  * TODO: support other formats than FLAC
  */
-class EncodedAudioRecorder @JvmOverloads constructor(audioSource: Int = AudioRecorder.DEFAULT_AUDIO_SOURCE, sampleRate: Int = AudioRecorder.DEFAULT_SAMPLE_RATE) : AbstractAudioRecorder(audioSource, sampleRate) {
+class EncodedAudioRecorder
+@RequiresPermission(RECORD_AUDIO)
+@JvmOverloads
+constructor(
+    audioSource: Int = AudioRecorder.DEFAULT_AUDIO_SOURCE,
+    sampleRate: Int = AudioRecorder.DEFAULT_SAMPLE_RATE
+) : AbstractAudioRecorder(audioSource, sampleRate) {
 
     // TODO: Use queue of byte[]
     private val mRecordingEnc: ByteArray
@@ -54,7 +60,8 @@ class EncodedAudioRecorder @JvmOverloads constructor(audioSource: Int = AudioRec
         try {
             val bufferSize = bufferSize
             createRecorder(audioSource, sampleRate, bufferSize)
-            val framePeriod = bufferSize / (2 * AudioRecorder.RESOLUTION_IN_BYTES.toInt() * AudioRecorder.CHANNELS.toInt())
+            val framePeriod =
+                bufferSize / (2 * AudioRecorder.RESOLUTION_IN_BYTES.toInt() * AudioRecorder.CHANNELS.toInt())
             createBuffer(framePeriod)
             state = AudioRecorder.State.READY
         } catch (e: Exception) {
@@ -62,7 +69,8 @@ class EncodedAudioRecorder @JvmOverloads constructor(audioSource: Int = AudioRec
         }
 
         // TODO: replace 35 with the max length of the recording
-        mRecordingEnc = ByteArray(AudioRecorder.RESOLUTION_IN_BYTES.toInt() * AudioRecorder.CHANNELS.toInt() * sampleRate * 35) // 35 sec raw
+        mRecordingEnc =
+            ByteArray(AudioRecorder.RESOLUTION_IN_BYTES.toInt() * AudioRecorder.CHANNELS.toInt() * sampleRate * 35) // 35 sec raw
     }
 
 //    @JvmOverloads
@@ -92,8 +100,10 @@ class EncodedAudioRecorder @JvmOverloads constructor(audioSource: Int = AudioRec
         mNumBytesSubmitted = 0
         mNumBytesDequeued = 0
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            val format = MediaFormatFactory.createMediaFormat(MediaFormatFactory.Type.FLAC, sampleRate)
-            val componentNames = AudioUtils.getEncoderNamesForType(format!!.getString(MediaFormat.KEY_MIME)!!)
+            val format =
+                MediaFormatFactory.createMediaFormat(MediaFormatFactory.Type.FLAC, sampleRate)
+            val componentNames =
+                AudioUtils.getEncoderNamesForType(format!!.getString(MediaFormat.KEY_MIME)!!)
             for (componentName in componentNames) {
                 Log.i("component/format: $componentName/$format")
                 val codec = AudioUtils.createCodec(componentName, format)
@@ -130,7 +140,12 @@ class EncodedAudioRecorder @JvmOverloads constructor(audioSource: Int = AudioRec
      * Copy audio from the recorder into the encoder.
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private fun queueInputBuffer(codec: MediaCodec, inputBuffers: Array<ByteBuffer>, index: Int, speechRecord: SpeechRecord?): Int {
+    private fun queueInputBuffer(
+        codec: MediaCodec,
+        inputBuffers: Array<ByteBuffer>,
+        index: Int,
+        speechRecord: SpeechRecord?
+    ): Int {
         if (speechRecord == null || speechRecord.recordingState != AudioRecord.RECORDSTATE_RECORDING) {
             return -1
         }
@@ -157,7 +172,12 @@ class EncodedAudioRecorder @JvmOverloads constructor(audioSource: Int = AudioRec
      * TODO: copy directly (without the intermediate byte array)
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private fun dequeueOutputBuffer(codec: MediaCodec, outputBuffers: Array<ByteBuffer>, index: Int, info: MediaCodec.BufferInfo) {
+    private fun dequeueOutputBuffer(
+        codec: MediaCodec,
+        outputBuffers: Array<ByteBuffer>,
+        index: Int,
+        info: MediaCodec.BufferInfo
+    ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             val buffer = outputBuffers[index]
             Log.i("size/remaining: " + info.size + "/" + buffer.remaining())
@@ -207,7 +227,13 @@ class EncodedAudioRecorder @JvmOverloads constructor(audioSource: Int = AudioRec
                     if (index >= 0) {
                         val size = queueInputBuffer(codec, codecInputBuffers, index, speechRecord)
                         if (size == -1) {
-                            codec.queueInputBuffer(index, 0, 0, 0, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
+                            codec.queueInputBuffer(
+                                index,
+                                0,
+                                0,
+                                0,
+                                MediaCodec.BUFFER_FLAG_END_OF_STREAM
+                            )
                             Log.i("enc: in: EOS")
                             doneSubmittingInput = true
                         } else {

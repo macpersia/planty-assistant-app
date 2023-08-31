@@ -6,5 +6,5 @@ package be.planty.assistant.app.global
 
 object Constants {
     //public static final String PRODUCT_ID = "interactive_conversation";
-    const val PRODUCT_ID = "be.planty.assistant.app"
+    const val PRODUCT_ID = "be_planty_assistant_app"
 }

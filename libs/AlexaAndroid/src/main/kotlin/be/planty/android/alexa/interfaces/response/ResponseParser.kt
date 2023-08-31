@@ -1,9 +1,6 @@
 package be.planty.android.alexa.interfaces.response
 
 import android.util.Log
-
-import com.google.gson.Gson
-import com.google.gson.JsonParseException
 import be.planty.android.alexa.data.Directive
 import be.planty.android.alexa.interfaces.AvsException
 import be.planty.android.alexa.interfaces.AvsItem
@@ -27,11 +24,12 @@ import be.planty.android.alexa.interfaces.speechrecognizer.AvsExpectSpeechItem
 import be.planty.android.alexa.interfaces.speechrecognizer.AvsStopCaptureItem
 import be.planty.android.alexa.interfaces.speechsynthesizer.AvsSpeakItem
 import be.planty.android.alexa.interfaces.system.AvsSetEndpointItem
-
+import com.google.gson.Gson
+import com.google.gson.JsonParseException
+import okhttp3.Response
 import org.apache.commons.fileupload.MultipartStream
 import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.StringUtils
-
 import java.io.BufferedReader
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -39,15 +37,8 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.StringReader
 import java.nio.charset.Charset
-import java.util.ArrayList
-import java.util.HashMap
-import java.util.regex.Matcher
 import java.util.regex.Pattern
-
-import okhttp3.Headers
-import okhttp3.Response
-
-import okhttp3.internal.Util.UTF_8
+import kotlin.text.Charsets.UTF_8
 
 /**
  * Static helper class to parse incoming responses from the Alexa server and generate a corresponding
@@ -236,7 +227,7 @@ object ResponseParser {
     fun getDirective(directive: String): Directive {
         Log.i(TAG, directive)
         val gson = Gson()
-        val wrapper = gson.fromJson<Directive.DirectiveWrapper>(directive, Directive.DirectiveWrapper::class.java)
+        val wrapper = gson.fromJson(directive, Directive.DirectiveWrapper::class.java)
         return if (wrapper.directive == null) {
             gson.fromJson<Directive>(directive, Directive::class.java)
         } else wrapper.directive!!

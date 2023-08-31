@@ -64,5 +64,6 @@ repositories {
 }
 dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    api 'androidx.annotation:annotation:1.6.0'
 }
 
