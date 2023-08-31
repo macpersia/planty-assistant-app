@@ -1,23 +1,22 @@
 package be.planty.android.alexa.interfaces.speechrecognizer
 
+import android.Manifest.permission.RECORD_AUDIO
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
-import android.os.AsyncTask
 import android.util.Log
-
+import androidx.annotation.RequiresPermission
 import be.planty.android.alexa.callbacks.AsyncCallback
 import be.planty.android.alexa.interfaces.AvsException
 import be.planty.android.alexa.requestbody.DataRequestBody
 import com.amazon.identity.auth.device.AuthError
 import com.amazon.identity.auth.device.AuthError.ERROR_TYPE
-
-import java.io.IOException
-import java.io.OutputStream
-
 import okhttp3.Call
 import okhttp3.RequestBody
 import okio.BufferedSink
+import java.io.IOException
+import java.io.OutputStream
+import java.util.concurrent.CompletableFuture.runAsync
 
 /**
  * A subclass of [SpeechSendEvent] that sends a recorded raw audio to the AVS server, unlike [SpeechSendText], this does not use an intermediary steps, but the starting/stopping
@@ -57,6 +56,7 @@ class SpeechSendVoice : SpeechSendEvent() {
      * @throws IOException
      *
      */
+    @RequiresPermission(RECORD_AUDIO)
     @Deprecated("Manage this state on the application side, instead, and send the audio using {@link SpeechSendAudio}")
     @Throws(IOException::class)
     fun startRecording(url: String, accessToken: String, buffer: ByteArray?,
@@ -74,14 +74,11 @@ class SpeechSendVoice : SpeechSendEvent() {
 
         mCallback = callback
         mIsRecording = true
-        object : AsyncTask<Void, Void, Void>() {
-            override fun doInBackground(vararg params: Void): Void? {
-                synchronized(mLock) {
-                    prepareConnection(url, accessToken)
-                }
-                return null
+        runAsync {
+            synchronized(mLock) {
+                prepareConnection(url, accessToken)
             }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        }
 
         if (buffer != null) {
             mOutputStream.write(buffer)

@@ -2,7 +2,6 @@ package be.planty.android.alexa
 
 import android.content.Context
 import android.content.Intent
-import android.os.AsyncTask
 import android.util.Log
 import be.planty.android.alexa.AuthorizationManager.Companion.createCodeVerifier
 import be.planty.android.alexa.callbacks.AsyncCallback
@@ -24,14 +23,12 @@ import be.planty.android.alexa.system.AndroidSystemHandler
 import be.planty.android.alexa.utility.Util
 import be.planty.android.alexa.utility.Util.IDENTIFIER
 import com.amazon.identity.auth.device.AuthError
-import com.amazon.identity.auth.device.api.Listener
-import com.amazon.identity.auth.device.api.authorization.AuthorizeResult
-import com.amazon.identity.auth.device.api.authorization.ScopeFactory
 import com.amazon.identity.auth.device.api.workflow.RequestContext
 import okhttp3.Call
 import okio.BufferedSink
 import java.io.IOException
 import java.net.HttpURLConnection
+import java.util.concurrent.CompletableFuture.runAsync
 
 /**
  * The overarching instance that handles all the state when requesting intents to the Alexa Voice Service servers, it creates all the required instances and confirms that users are logged in
@@ -210,31 +207,27 @@ class AlexaManager private constructor(context: Context, productId: String?) {
                     //set our URL
                     val url = eventsUrl
                     //do this off the main thread
-                    object : AsyncTask<Void, Void, AvsResponse?>() {
-                        override fun doInBackground(vararg params: Void): AvsResponse? {
-                            //get our access token
-                            TokenManager.getAccessToken(lwaRequestContext, mContext, object : TokenManager.TokenCallback {
-                                    override fun onSuccess(token: String) {
+                    runAsync {
+                        //get our access token
+                        TokenManager.getAccessToken(lwaRequestContext, mContext, object : TokenManager.TokenCallback {
+                                override fun onSuccess(token: String) {
 //                            com.amazon.identity.auth.device.api.authorization.AuthorizationManager.getToken(
 //                                mContext, arrayOf(alexaAllScope),
 //                                object : Listener<AuthorizeResult, AuthError> {
 //                                    override fun onSuccess(res: AuthorizeResult?) {
-                                        try {
-                                            speechSendText.sendText(mContext, url, token, text, AsyncEventHandler(this@AlexaManager, callback))
-                                        } catch (e: Exception) {
-                                            e.printStackTrace()
-                                            //bubble up the error
-                                            callback?.failure(AuthError(e.message, e, AuthError.ERROR_TYPE.ERROR_UNKNOWN))
-                                        }
+                                    try {
+                                        speechSendText.sendText(mContext, url, token, text, AsyncEventHandler(this@AlexaManager, callback))
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                        //bubble up the error
+                                        callback?.failure(AuthError(e.message, e, AuthError.ERROR_TYPE.ERROR_UNKNOWN))
                                     }
-                                    override fun onFailure(e: Throwable) {
+                                }
+                                override fun onFailure(e: Throwable) {
 //                                    override fun onError(p0: AuthError?) {
-                                    }
-                            })
-                            return null
-                        }
-
-                    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+                                }
+                        })
+                    }
                 } else {
                     //if the user is not logged in, log them in and then call the function again
                     logIn(object : ImplAuthorizationCallback<AvsResponse>(callback) {
@@ -293,18 +286,15 @@ class AlexaManager private constructor(context: Context, productId: String?) {
 //                        object : Listener<AuthorizeResult, AuthError> {
 //                            override fun onSuccess(res: AuthorizeResult?) {
                                 //do this off the main thread
-                                object : AsyncTask<Void, Void, AvsResponse?>() {
-                                    override fun doInBackground(vararg params: Void): AvsResponse? {
-                                        try {
-                                            speechSendAudio.sendAudio(url, token, requestBody, AsyncEventHandler(this@AlexaManager, callback))
-                                        } catch (e: IOException) {
-                                            e.printStackTrace()
-                                            //bubble up the error
-                                            callback?.failure(AuthError(e.message, e, AuthError.ERROR_TYPE.ERROR_IO))
-                                        }
-                                        return null
+                                runAsync {
+                                    try {
+                                        speechSendAudio.sendAudio(url, token, requestBody, AsyncEventHandler(this@AlexaManager, callback))
+                                    } catch (e: IOException) {
+                                        e.printStackTrace()
+                                        //bubble up the error
+                                        callback?.failure(AuthError(e.message, e, AuthError.ERROR_TYPE.ERROR_IO))
                                     }
-                                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+                                }
                             }
                             override fun onFailure(e: Throwable) {
 //                            override fun onError(e: AuthError?) {
@@ -453,14 +443,10 @@ class AlexaManager private constructor(context: Context, productId: String?) {
 //                        object : Listener<AuthorizeResult, AuthError> {
 //                            override fun onSuccess(res: AuthorizeResult?) {
                                 //do this off the main thread
-                                object : AsyncTask<Void, Void, AvsResponse?>() {
-                                    override fun doInBackground(vararg params: Void): AvsResponse? {
-                                        Log.i(TAG, event)
-                                        GenericSendEvent(url, token, event, AsyncEventHandler(this@AlexaManager, callback))
-                                        return null
-                                    }
-
-                                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+                                runAsync {
+                                    Log.i(TAG, event)
+                                    GenericSendEvent(url, token, event, AsyncEventHandler(this@AlexaManager, callback))
+                                }
                             }
                             override fun onFailure(e: Throwable) {
 //                            override fun onError(p0: AuthError?) {

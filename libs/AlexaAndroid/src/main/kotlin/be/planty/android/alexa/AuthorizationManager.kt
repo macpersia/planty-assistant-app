@@ -224,7 +224,7 @@ class AuthorizationManager
                 }
             }
         """
-        //options.putString(SCOPE_DATA.`val`, scope_data)
+        options.putString(SCOPE_DATA.`val`, scope_data)
         options.putBoolean(GET_AUTH_CODE.`val`, true)
         options.putString(CODE_CHALLENGE.`val`, codeChallenge)
         options.putString(CODE_CHALLENGE_METHOD.`val`, "S256")
@@ -255,8 +255,8 @@ class AuthorizationManager
 
         // Changed by Hadi
         //private val APP_SCOPES = arrayOf("alexa:all")
-        //private val APP_SCOPES = arrayOf("alexa:all", "profile")
-        private val APP_SCOPES = arrayOf("profile")
+        private val APP_SCOPES = arrayOf("alexa:all", "profile")
+        //private val APP_SCOPES = arrayOf("profile")
 //        lateinit var alexaAllScope: Scope
 //            private set
 

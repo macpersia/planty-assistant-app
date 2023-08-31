@@ -3,20 +3,17 @@ package be.planty.android.alexa.audioplayer
 import android.content.Context
 import android.media.AudioManager
 import android.media.MediaPlayer
-import android.os.AsyncTask
 import android.os.PowerManager
 import android.text.TextUtils
 import android.util.Log
-
 import be.planty.android.alexa.interfaces.AvsItem
 import be.planty.android.alexa.interfaces.audioplayer.AvsPlayContentItem
 import be.planty.android.alexa.interfaces.audioplayer.AvsPlayRemoteItem
 import be.planty.android.alexa.interfaces.speechsynthesizer.AvsSpeakItem
-
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.ArrayList
+import java.util.concurrent.CompletableFuture.runAsync
 
 /**
  * A class that abstracts the Android MediaPlayer and adds additional functionality to handle AvsItems
@@ -79,29 +76,24 @@ private constructor(context: Context) {
             callback.playerProgress(currentItem, mMediaPlayer!!.currentPosition.toLong(), 0f)
         }
         mMediaPlayer!!.start()
-        object : AsyncTask<Void, Void, Void>() {
-            override fun doInBackground(vararg params: Void): Void? {
-                try {
-                    while (mediaPlayer != null && mediaPlayer!!.isPlaying) {
-                        val pos = mediaPlayer!!.currentPosition
-                        val percent = pos.toFloat() / mediaPlayer!!.duration.toFloat()
-                        postProgress(percent)
-                        try {
-                            Thread.sleep(10)
-                        } catch (e: InterruptedException) {
-                            e.printStackTrace()
-                        }
-
+        runAsync {
+            try {
+                while (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+                    val pos = mediaPlayer!!.currentPosition
+                    val percent = pos.toFloat() / mediaPlayer!!.duration.toFloat()
+                    postProgress(percent)
+                    try {
+                        Thread.sleep(10)
+                    } catch (e: InterruptedException) {
+                        e.printStackTrace()
                     }
-                } catch (e: NullPointerException) {
-                    e.printStackTrace()
-                } catch (e: IllegalStateException) {
-                    e.printStackTrace()
                 }
-
-                return null
+            } catch (e: NullPointerException) {
+                e.printStackTrace()
+            } catch (e: IllegalStateException) {
+                e.printStackTrace()
             }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        }
     }
 
     /**
